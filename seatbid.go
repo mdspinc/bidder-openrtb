@@ -1,4 +1,5 @@
 package openrtb
+//go:generate ffjson -force-regenerate $GOFILE
 
 import (
 	"encoding/json"

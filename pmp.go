@@ -1,4 +1,5 @@
 package openrtb
+//go:generate ffjson -force-regenerate $GOFILE
 
 import "encoding/json"
 
@@ -10,6 +11,7 @@ type Pmp struct {
 }
 
 // PMP Deal
+// ffjson: skip
 type Deal struct {
 	ID               string           `json:"id,omitempty"` // Unique deal ID
 	BidFloor         float64          `json:"bidfloor,omitempty"`
