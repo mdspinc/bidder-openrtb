@@ -36,11 +36,6 @@ func (mj *Native) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteString(`{ "request":`)
 	fflib.WriteJsonString(buf, string(mj.Request))
 	buf.WriteByte(',')
-	if len(mj.Ver) != 0 {
-		buf.WriteString(`"ver":`)
-		fflib.WriteJsonString(buf, string(mj.Ver))
-		buf.WriteByte(',')
-	}
 	if len(mj.API) != 0 {
 		buf.WriteString(`"api":`)
 		if mj.API != nil {
@@ -100,8 +95,6 @@ const (
 
 	ffj_t_Native_Request
 
-	ffj_t_Native_Ver
-
 	ffj_t_Native_API
 
 	ffj_t_Native_BAttr
@@ -110,8 +103,6 @@ const (
 )
 
 var ffj_key_Native_Request = []byte("request")
-
-var ffj_key_Native_Ver = []byte("ver")
 
 var ffj_key_Native_API = []byte("api")
 
@@ -210,14 +201,6 @@ mainparse:
 						goto mainparse
 					}
 
-				case 'v':
-
-					if bytes.Equal(ffj_key_Native_Ver, kn) {
-						currentKey = ffj_t_Native_Ver
-						state = fflib.FFParse_want_colon
-						goto mainparse
-					}
-
 				}
 
 				if fflib.SimpleLetterEqualFold(ffj_key_Native_Ext, kn) {
@@ -234,12 +217,6 @@ mainparse:
 
 				if fflib.SimpleLetterEqualFold(ffj_key_Native_API, kn) {
 					currentKey = ffj_t_Native_API
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
-				if fflib.SimpleLetterEqualFold(ffj_key_Native_Ver, kn) {
-					currentKey = ffj_t_Native_Ver
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -269,9 +246,6 @@ mainparse:
 
 				case ffj_t_Native_Request:
 					goto handle_Request
-
-				case ffj_t_Native_Ver:
-					goto handle_Ver
 
 				case ffj_t_Native_API:
 					goto handle_API
@@ -315,32 +289,6 @@ handle_Request:
 			outBuf := fs.Output.Bytes()
 
 			uj.Request = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_Ver:
-
-	/* handler: uj.Ver type=string kind=string quoted=false*/
-
-	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.Ver = string(string(outBuf))
 
 		}
 	}

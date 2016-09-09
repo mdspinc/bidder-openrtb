@@ -69,15 +69,11 @@ func (mj *Impression) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Native != nil {
 		if true {
+			/* Struct fall back. type=openrtb.Native kind=struct */
 			buf.WriteString(`"native":`)
-
-			{
-
-				err = mj.Native.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(mj.Native)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -135,15 +131,11 @@ func (mj *Impression) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Pmp != nil {
 		if true {
+			/* Struct fall back. type=openrtb.Pmp kind=struct */
 			buf.WriteString(`"pmp":`)
-
-			{
-
-				err = mj.Pmp.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(mj.Pmp)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -635,23 +627,16 @@ handle_Native:
 	/* handler: uj.Native type=openrtb.Native kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			uj.Native = nil
-
-			state = fflib.FFParse_after_value
-			goto mainparse
-		}
-
-		if uj.Native == nil {
-			uj.Native = new(Native)
-		}
-
-		err = uj.Native.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		/* Falling back. type=openrtb.Native kind=struct */
+		tbuf, err := fs.CaptureField(tok)
 		if err != nil {
-			return err
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &uj.Native)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
@@ -930,23 +915,16 @@ handle_Pmp:
 	/* handler: uj.Pmp type=openrtb.Pmp kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			uj.Pmp = nil
-
-			state = fflib.FFParse_after_value
-			goto mainparse
-		}
-
-		if uj.Pmp == nil {
-			uj.Pmp = new(Pmp)
-		}
-
-		err = uj.Pmp.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		/* Falling back. type=openrtb.Pmp kind=struct */
+		tbuf, err := fs.CaptureField(tok)
 		if err != nil {
-			return err
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &uj.Pmp)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value

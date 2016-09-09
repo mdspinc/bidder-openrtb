@@ -42,14 +42,10 @@ func (mj *BidResponse) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			if i != 0 {
 				buf.WriteString(`,`)
 			}
-
-			{
-
-				err = v.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			/* Struct fall back. type=openrtb.SeatBid kind=struct */
+			err = buf.Encode(&v)
+			if err != nil {
+				return err
 			}
 		}
 		buf.WriteString(`]`)
@@ -411,17 +407,16 @@ handle_SeatBid:
 				/* handler: tmp_uj__SeatBid type=openrtb.SeatBid kind=struct quoted=false*/
 
 				{
-					if tok == fflib.FFTok_null {
-
-						state = fflib.FFParse_after_value
-						goto mainparse
-					}
-
-					err = tmp_uj__SeatBid.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+					/* Falling back. type=openrtb.SeatBid kind=struct */
+					tbuf, err := fs.CaptureField(tok)
 					if err != nil {
-						return err
+						return fs.WrapErr(err)
 					}
-					state = fflib.FFParse_after_value
+
+					err = json.Unmarshal(tbuf, &tmp_uj__SeatBid)
+					if err != nil {
+						return fs.WrapErr(err)
+					}
 				}
 
 				uj.SeatBid = append(uj.SeatBid, tmp_uj__SeatBid)

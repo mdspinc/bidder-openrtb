@@ -56,15 +56,11 @@ func (mj *Device) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Geo != nil {
 		if true {
+			/* Struct fall back. type=openrtb.Geo kind=struct */
 			buf.WriteString(`"geo":`)
-
-			{
-
-				err = mj.Geo.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
-				}
-
+			err = buf.Encode(mj.Geo)
+			if err != nil {
+				return err
 			}
 			buf.WriteByte(',')
 		}
@@ -983,23 +979,16 @@ handle_Geo:
 	/* handler: uj.Geo type=openrtb.Geo kind=struct quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
-
-			uj.Geo = nil
-
-			state = fflib.FFParse_after_value
-			goto mainparse
-		}
-
-		if uj.Geo == nil {
-			uj.Geo = new(Geo)
-		}
-
-		err = uj.Geo.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		/* Falling back. type=openrtb.Geo kind=struct */
+		tbuf, err := fs.CaptureField(tok)
 		if err != nil {
-			return err
+			return fs.WrapErr(err)
 		}
-		state = fflib.FFParse_after_value
+
+		err = json.Unmarshal(tbuf, &uj.Geo)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
 	}
 
 	state = fflib.FFParse_after_value
