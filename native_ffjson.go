@@ -12,7 +12,7 @@ import (
 	fflib "github.com/pquerna/ffjson/fflib/v1"
 )
 
-func (mj *Native) MarshalJSON() ([]byte, error) {
+func (mj *jsonNative) MarshalJSON() ([]byte, error) {
 	var buf fflib.Buffer
 	if mj == nil {
 		buf.WriteString("null")
@@ -24,7 +24,7 @@ func (mj *Native) MarshalJSON() ([]byte, error) {
 	}
 	return buf.Bytes(), nil
 }
-func (mj *Native) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
+func (mj *jsonNative) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	if mj == nil {
 		buf.WriteString("null")
 		return nil
@@ -90,34 +90,34 @@ func (mj *Native) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 }
 
 const (
-	ffj_t_Nativebase = iota
-	ffj_t_Nativeno_such_key
+	ffj_t_jsonNativebase = iota
+	ffj_t_jsonNativeno_such_key
 
-	ffj_t_Native_Request
+	ffj_t_jsonNative_Request
 
-	ffj_t_Native_API
+	ffj_t_jsonNative_API
 
-	ffj_t_Native_BAttr
+	ffj_t_jsonNative_BAttr
 
-	ffj_t_Native_Ext
+	ffj_t_jsonNative_Ext
 )
 
-var ffj_key_Native_Request = []byte("request")
+var ffj_key_jsonNative_Request = []byte("request")
 
-var ffj_key_Native_API = []byte("api")
+var ffj_key_jsonNative_API = []byte("api")
 
-var ffj_key_Native_BAttr = []byte("battr")
+var ffj_key_jsonNative_BAttr = []byte("battr")
 
-var ffj_key_Native_Ext = []byte("ext")
+var ffj_key_jsonNative_Ext = []byte("ext")
 
-func (uj *Native) UnmarshalJSON(input []byte) error {
+func (uj *jsonNative) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
 	return uj.UnmarshalJSONFFLexer(fs, fflib.FFParse_map_start)
 }
 
-func (uj *Native) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
+func (uj *jsonNative) UnmarshalJSONFFLexer(fs *fflib.FFLexer, state fflib.FFParseState) error {
 	var err error = nil
-	currentKey := ffj_t_Nativebase
+	currentKey := ffj_t_jsonNativebase
 	_ = currentKey
 	tok := fflib.FFTok_init
 	wantedTok := fflib.FFTok_init
@@ -163,7 +163,7 @@ mainparse:
 			kn := fs.Output.Bytes()
 			if len(kn) <= 0 {
 				// "" case. hrm.
-				currentKey = ffj_t_Nativeno_such_key
+				currentKey = ffj_t_jsonNativeno_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			} else {
@@ -171,63 +171,63 @@ mainparse:
 
 				case 'a':
 
-					if bytes.Equal(ffj_key_Native_API, kn) {
-						currentKey = ffj_t_Native_API
+					if bytes.Equal(ffj_key_jsonNative_API, kn) {
+						currentKey = ffj_t_jsonNative_API
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'b':
 
-					if bytes.Equal(ffj_key_Native_BAttr, kn) {
-						currentKey = ffj_t_Native_BAttr
+					if bytes.Equal(ffj_key_jsonNative_BAttr, kn) {
+						currentKey = ffj_t_jsonNative_BAttr
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'e':
 
-					if bytes.Equal(ffj_key_Native_Ext, kn) {
-						currentKey = ffj_t_Native_Ext
+					if bytes.Equal(ffj_key_jsonNative_Ext, kn) {
+						currentKey = ffj_t_jsonNative_Ext
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				case 'r':
 
-					if bytes.Equal(ffj_key_Native_Request, kn) {
-						currentKey = ffj_t_Native_Request
+					if bytes.Equal(ffj_key_jsonNative_Request, kn) {
+						currentKey = ffj_t_jsonNative_Request
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
 
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Native_Ext, kn) {
-					currentKey = ffj_t_Native_Ext
+				if fflib.SimpleLetterEqualFold(ffj_key_jsonNative_Ext, kn) {
+					currentKey = ffj_t_jsonNative_Ext
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Native_BAttr, kn) {
-					currentKey = ffj_t_Native_BAttr
+				if fflib.SimpleLetterEqualFold(ffj_key_jsonNative_BAttr, kn) {
+					currentKey = ffj_t_jsonNative_BAttr
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_Native_API, kn) {
-					currentKey = ffj_t_Native_API
+				if fflib.SimpleLetterEqualFold(ffj_key_jsonNative_API, kn) {
+					currentKey = ffj_t_jsonNative_API
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				if fflib.EqualFoldRight(ffj_key_Native_Request, kn) {
-					currentKey = ffj_t_Native_Request
+				if fflib.EqualFoldRight(ffj_key_jsonNative_Request, kn) {
+					currentKey = ffj_t_jsonNative_Request
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
 
-				currentKey = ffj_t_Nativeno_such_key
+				currentKey = ffj_t_jsonNativeno_such_key
 				state = fflib.FFParse_want_colon
 				goto mainparse
 			}
@@ -244,19 +244,19 @@ mainparse:
 			if tok == fflib.FFTok_left_brace || tok == fflib.FFTok_left_bracket || tok == fflib.FFTok_integer || tok == fflib.FFTok_double || tok == fflib.FFTok_string || tok == fflib.FFTok_bool || tok == fflib.FFTok_null {
 				switch currentKey {
 
-				case ffj_t_Native_Request:
+				case ffj_t_jsonNative_Request:
 					goto handle_Request
 
-				case ffj_t_Native_API:
+				case ffj_t_jsonNative_API:
 					goto handle_API
 
-				case ffj_t_Native_BAttr:
+				case ffj_t_jsonNative_BAttr:
 					goto handle_BAttr
 
-				case ffj_t_Native_Ext:
+				case ffj_t_jsonNative_Ext:
 					goto handle_Ext
 
-				case ffj_t_Nativeno_such_key:
+				case ffj_t_jsonNativeno_such_key:
 					err = fs.SkipField(tok)
 					if err != nil {
 						return fs.WrapErr(err)

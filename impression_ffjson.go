@@ -69,11 +69,16 @@ func (mj *Impression) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Native != nil {
 		if true {
-			/* Struct fall back. type=openrtb.Native kind=struct */
 			buf.WriteString(`"native":`)
-			err = buf.Encode(mj.Native)
-			if err != nil {
-				return err
+
+			{
+
+				obj, err = mj.Native.MarshalJSON()
+				if err != nil {
+					return err
+				}
+				buf.Write(obj)
+
 			}
 			buf.WriteByte(',')
 		}
@@ -627,16 +632,28 @@ handle_Native:
 	/* handler: uj.Native type=openrtb.Native kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.Native kind=struct */
+		if tok == fflib.FFTok_null {
+
+			uj.Native = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
+		}
+
 		tbuf, err := fs.CaptureField(tok)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Native)
+		if uj.Native == nil {
+			uj.Native = new(Native)
+		}
+
+		err = uj.Native.UnmarshalJSON(tbuf)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

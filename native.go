@@ -17,4 +17,35 @@ type Native struct {
 	API   []int            `json:"api,omitempty"`   // List of supported API frameworks for this impression.
 	BAttr []int            `json:"battr,omitempty"` // Blocked creative attributes
 	Ext   *json.RawMessage `json:"ext,omitempty"`
+
+	ParsedRequest *NativeRequest `json:"-"` // custom field for parsed request payload
+}
+
+type jsonNative Native
+
+// MarshalJSON custom marshalling with parsing request
+func (v *Native) MarshalJSON() ([]byte, error) {
+	if v.ParsedRequest != nil {
+		req, err := json.Marshal(v.ParsedRequest)
+		if err != nil {
+			return []byte{}, err
+		}
+		v.Request = string(req)
+	}
+	return json.Marshal((*jsonNative)(v))
+}
+
+// UnmarshalJSON custom unmarshalling with parsing request
+func (v *Native) UnmarshalJSON(data []byte) error {
+	var h jsonNative
+	if err := json.Unmarshal(data, &h); err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal([]byte(h.Request), &h.ParsedRequest); err != nil {
+		return err
+	}
+
+	*v = (Native)(h)
+	return nil
 }
