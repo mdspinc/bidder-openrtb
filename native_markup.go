@@ -10,8 +10,8 @@ type NativeAdMarkup struct {
 
 type NativeAdMarkupInner struct {
 	Ver         int              `json:"ver,omitempty"`
-	Assets      []*NativeAsset   `json:"assets,omitempty"`
-	Link        string           `json:"link,omitempty"`
+	Assets      []NativeAsset    `json:"assets,omitempty"`
+	Link        NativeLink       `json:"link,omitempty"`
 	ImpTrackers []string         `json:"imptrackers,omitempty"`
 	JsTracker   string           `json:"jstracker,omitempty"`
 	Ext         *json.RawMessage `json:"ext,omitempty"`

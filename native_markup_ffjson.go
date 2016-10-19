@@ -246,11 +246,6 @@ func (mj *NativeAdMarkupInner) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 
 				{
 
-					if v == nil {
-						buf.WriteString("null")
-						return nil
-					}
-
 					err = v.MarshalJSONBuf(buf)
 					if err != nil {
 						return err
@@ -264,9 +259,17 @@ func (mj *NativeAdMarkupInner) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		}
 		buf.WriteByte(',')
 	}
-	if len(mj.Link) != 0 {
+	if true {
 		buf.WriteString(`"link":`)
-		fflib.WriteJsonString(buf, string(mj.Link))
+
+		{
+
+			err = mj.Link.MarshalJSONBuf(buf)
+			if err != nil {
+				return err
+			}
+
+		}
 		buf.WriteByte(',')
 	}
 	if len(mj.ImpTrackers) != 0 {
@@ -566,7 +569,7 @@ handle_Ver:
 
 handle_Assets:
 
-	/* handler: uj.Assets type=[]*openrtb.NativeAsset kind=slice quoted=false*/
+	/* handler: uj.Assets type=[]openrtb.NativeAsset kind=slice quoted=false*/
 
 	{
 
@@ -580,13 +583,13 @@ handle_Assets:
 			uj.Assets = nil
 		} else {
 
-			uj.Assets = []*NativeAsset{}
+			uj.Assets = []NativeAsset{}
 
 			wantVal := true
 
 			for {
 
-				var tmp_uj__Assets *NativeAsset
+				var tmp_uj__Assets NativeAsset
 
 				tok = fs.Scan()
 				if tok == fflib.FFTok_error {
@@ -607,19 +610,13 @@ handle_Assets:
 					wantVal = true
 				}
 
-				/* handler: tmp_uj__Assets type=*openrtb.NativeAsset kind=ptr quoted=false*/
+				/* handler: tmp_uj__Assets type=openrtb.NativeAsset kind=struct quoted=false*/
 
 				{
 					if tok == fflib.FFTok_null {
 
-						tmp_uj__Assets = nil
-
 						state = fflib.FFParse_after_value
 						goto mainparse
-					}
-
-					if tmp_uj__Assets == nil {
-						tmp_uj__Assets = new(NativeAsset)
 					}
 
 					err = tmp_uj__Assets.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
@@ -641,25 +638,20 @@ handle_Assets:
 
 handle_Link:
 
-	/* handler: uj.Link type=string kind=string quoted=false*/
+	/* handler: uj.Link type=openrtb.NativeLink kind=struct quoted=false*/
 
 	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
-		}
-
 		if tok == fflib.FFTok_null {
 
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.Link = string(string(outBuf))
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		err = uj.Link.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
