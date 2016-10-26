@@ -472,6 +472,21 @@ func (mj *Geo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.AppendFloat(buf, float64(mj.Lon), 'g', -1, 64)
 		buf.WriteByte(',')
 	}
+	if mj.Accuracy != 0 {
+		buf.WriteString(`"accuracy":`)
+		fflib.FormatBits2(buf, uint64(mj.Accuracy), 10, mj.Accuracy < 0)
+		buf.WriteByte(',')
+	}
+	if mj.LastFix != 0 {
+		buf.WriteString(`"lastfix":`)
+		fflib.FormatBits2(buf, uint64(mj.LastFix), 10, mj.LastFix < 0)
+		buf.WriteByte(',')
+	}
+	if mj.IPService != 0 {
+		buf.WriteString(`"ipservice":`)
+		fflib.FormatBits2(buf, uint64(mj.IPService), 10, mj.IPService < 0)
+		buf.WriteByte(',')
+	}
 	if len(mj.Country) != 0 {
 		buf.WriteString(`"country":`)
 		fflib.WriteJsonString(buf, string(mj.Country))
@@ -541,6 +556,12 @@ const (
 
 	ffj_t_Geo_Lon
 
+	ffj_t_Geo_Accuracy
+
+	ffj_t_Geo_LastFix
+
+	ffj_t_Geo_IPService
+
 	ffj_t_Geo_Country
 
 	ffj_t_Geo_Region
@@ -563,6 +584,12 @@ const (
 var ffj_key_Geo_Lat = []byte("lat")
 
 var ffj_key_Geo_Lon = []byte("lon")
+
+var ffj_key_Geo_Accuracy = []byte("accuracy")
+
+var ffj_key_Geo_LastFix = []byte("lastfix")
+
+var ffj_key_Geo_IPService = []byte("ipservice")
 
 var ffj_key_Geo_Country = []byte("country")
 
@@ -641,6 +668,14 @@ mainparse:
 			} else {
 				switch kn[0] {
 
+				case 'a':
+
+					if bytes.Equal(ffj_key_Geo_Accuracy, kn) {
+						currentKey = ffj_t_Geo_Accuracy
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				case 'c':
 
 					if bytes.Equal(ffj_key_Geo_Country, kn) {
@@ -662,6 +697,14 @@ mainparse:
 						goto mainparse
 					}
 
+				case 'i':
+
+					if bytes.Equal(ffj_key_Geo_IPService, kn) {
+						currentKey = ffj_t_Geo_IPService
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				case 'l':
 
 					if bytes.Equal(ffj_key_Geo_Lat, kn) {
@@ -671,6 +714,11 @@ mainparse:
 
 					} else if bytes.Equal(ffj_key_Geo_Lon, kn) {
 						currentKey = ffj_t_Geo_Lon
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Geo_LastFix, kn) {
+						currentKey = ffj_t_Geo_LastFix
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -776,6 +824,24 @@ mainparse:
 					goto mainparse
 				}
 
+				if fflib.EqualFoldRight(ffj_key_Geo_IPService, kn) {
+					currentKey = ffj_t_Geo_IPService
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffj_key_Geo_LastFix, kn) {
+					currentKey = ffj_t_Geo_LastFix
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Geo_Accuracy, kn) {
+					currentKey = ffj_t_Geo_Accuracy
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
 				if fflib.SimpleLetterEqualFold(ffj_key_Geo_Lon, kn) {
 					currentKey = ffj_t_Geo_Lon
 					state = fflib.FFParse_want_colon
@@ -810,6 +876,15 @@ mainparse:
 
 				case ffj_t_Geo_Lon:
 					goto handle_Lon
+
+				case ffj_t_Geo_Accuracy:
+					goto handle_Accuracy
+
+				case ffj_t_Geo_LastFix:
+					goto handle_LastFix
+
+				case ffj_t_Geo_IPService:
+					goto handle_IPService
 
 				case ffj_t_Geo_Country:
 					goto handle_Country
@@ -905,6 +980,96 @@ handle_Lon:
 			}
 
 			uj.Lon = float64(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Accuracy:
+
+	/* handler: uj.Accuracy type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.Accuracy = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_LastFix:
+
+	/* handler: uj.LastFix type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.LastFix = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_IPService:
+
+	/* handler: uj.IPService type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.IPService = int(tval)
 
 		}
 	}

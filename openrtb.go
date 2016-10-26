@@ -1,4 +1,5 @@
 package openrtb
+
 //go:generate ffjson -force-regenerate $GOFILE
 
 import "encoding/json"
@@ -194,6 +195,9 @@ type Producer ThirdParty
 type Geo struct {
 	Lat           float64          `json:"lat,omitempty"`           // Latitude from -90 to 90
 	Lon           float64          `json:"lon,omitempty"`           // Longitude from -180 to 180
+	Accuracy      int              `json:"accuracy,omitempty"`      // Estimated location accuracy in meters;
+	LastFix       int              `json:"lastfix,omitempty"`       // Number of seconds since this geolocation fix was established.
+	IPService     int              `json:"ipservice,omitempty"`     // Service or provider used to determine geolocation from IP
 	Country       string           `json:"country,omitempty"`       // Country using ISO 3166-1 Alpha 3
 	Region        string           `json:"region,omitempty"`        // Region using ISO 3166-2
 	RegionFIPS104 string           `json:"regionFIPS104,omitempty"` // Region of a country using FIPS 10-4
