@@ -235,43 +235,38 @@ func (mj *NativeAdMarkupInner) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.FormatBits2(buf, uint64(mj.Ver), 10, mj.Ver < 0)
 		buf.WriteByte(',')
 	}
-	if len(mj.Assets) != 0 {
-		buf.WriteString(`"assets":`)
-		if mj.Assets != nil {
-			buf.WriteString(`[`)
-			for i, v := range mj.Assets {
-				if i != 0 {
-					buf.WriteString(`,`)
-				}
-
-				{
-
-					err = v.MarshalJSONBuf(buf)
-					if err != nil {
-						return err
-					}
-
-				}
-			}
-			buf.WriteString(`]`)
-		} else {
-			buf.WriteString(`null`)
-		}
-		buf.WriteByte(',')
-	}
-	if true {
-		buf.WriteString(`"link":`)
-
-		{
-
-			err = mj.Link.MarshalJSONBuf(buf)
-			if err != nil {
-				return err
+	buf.WriteString(`"assets":`)
+	if mj.Assets != nil {
+		buf.WriteString(`[`)
+		for i, v := range mj.Assets {
+			if i != 0 {
+				buf.WriteString(`,`)
 			}
 
+			{
+
+				err = v.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
+			}
 		}
-		buf.WriteByte(',')
+		buf.WriteString(`]`)
+	} else {
+		buf.WriteString(`null`)
 	}
+	buf.WriteString(`,"link":`)
+
+	{
+
+		err = mj.Link.MarshalJSONBuf(buf)
+		if err != nil {
+			return err
+		}
+
+	}
+	buf.WriteByte(',')
 	if len(mj.ImpTrackers) != 0 {
 		buf.WriteString(`"imptrackers":`)
 		if mj.ImpTrackers != nil {
@@ -827,12 +822,9 @@ func (mj *NativeAsset) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	buf.WriteString(`{ `)
-	if mj.ID != 0 {
-		buf.WriteString(`"id":`)
-		fflib.FormatBits2(buf, uint64(mj.ID), 10, mj.ID < 0)
-		buf.WriteByte(',')
-	}
+	buf.WriteString(`{ "id":`)
+	fflib.FormatBits2(buf, uint64(mj.ID), 10, mj.ID < 0)
+	buf.WriteByte(',')
 	if mj.Required != 0 {
 		buf.WriteString(`"required":`)
 		fflib.FormatBits2(buf, uint64(mj.Required), 10, mj.Required < 0)
@@ -1461,12 +1453,9 @@ func (mj *NativeData) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	buf.WriteString(`{ `)
-	if len(mj.Value) != 0 {
-		buf.WriteString(`"value":`)
-		fflib.WriteJsonString(buf, string(mj.Value))
-		buf.WriteByte(',')
-	}
+	buf.WriteString(`{ "value":`)
+	fflib.WriteJsonString(buf, string(mj.Value))
+	buf.WriteByte(',')
 	if len(mj.Label) != 0 {
 		buf.WriteString(`"label":`)
 		fflib.WriteJsonString(buf, string(mj.Label))
@@ -1775,12 +1764,9 @@ func (mj *NativeImage) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	buf.WriteString(`{ `)
-	if len(mj.URL) != 0 {
-		buf.WriteString(`"url":`)
-		fflib.WriteJsonString(buf, string(mj.URL))
-		buf.WriteByte(',')
-	}
+	buf.WriteString(`{ "url":`)
+	fflib.WriteJsonString(buf, string(mj.URL))
+	buf.WriteByte(',')
 	if mj.H != 0 {
 		buf.WriteString(`"h":`)
 		fflib.FormatBits2(buf, uint64(mj.H), 10, mj.H < 0)
@@ -2149,12 +2135,9 @@ func (mj *NativeLink) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	buf.WriteString(`{ `)
-	if len(mj.URL) != 0 {
-		buf.WriteString(`"url":`)
-		fflib.WriteJsonString(buf, string(mj.URL))
-		buf.WriteByte(',')
-	}
+	buf.WriteString(`{ "url":`)
+	fflib.WriteJsonString(buf, string(mj.URL))
+	buf.WriteByte(',')
 	if len(mj.ClickTrackers) != 0 {
 		buf.WriteString(`"clicktrackers":`)
 		if mj.ClickTrackers != nil {
@@ -2574,12 +2557,9 @@ func (mj *NativeTitle) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	buf.WriteString(`{ `)
-	if len(mj.Text) != 0 {
-		buf.WriteString(`"text":`)
-		fflib.WriteJsonString(buf, string(mj.Text))
-		buf.WriteByte(',')
-	}
+	buf.WriteString(`{ "text":`)
+	fflib.WriteJsonString(buf, string(mj.Text))
+	buf.WriteByte(',')
 	if mj.Ext != nil {
 		if true {
 			buf.WriteString(`"ext":`)
@@ -2836,13 +2816,8 @@ func (mj *NativeVideo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	var obj []byte
 	_ = obj
 	_ = err
-	buf.WriteString(`{ `)
-	if len(mj.VASTTag) != 0 {
-		buf.WriteString(`"vasttag":`)
-		fflib.WriteJsonString(buf, string(mj.VASTTag))
-		buf.WriteByte(',')
-	}
-	buf.Rewind(1)
+	buf.WriteString(`{"vasttag":`)
+	fflib.WriteJsonString(buf, string(mj.VASTTag))
 	buf.WriteByte('}')
 	return nil
 }
