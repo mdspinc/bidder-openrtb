@@ -4,8 +4,12 @@ import "encoding/json"
 
 //go:generate ffjson -force-regenerate $GOFILE
 
+type NativeRequestOuter struct {
+	Native *NativeRequest `json:"native,omitempty"`
+}
+
 type NativeRequest struct {
-	// Ver      string                `json:"ver,omitempty"`
+	Ver      string                `json:"ver,omitempty"`
 	Layout   int                   `json:"layout,omitempty"`
 	Adunit   int                   `json:"adunit,omitempty"`
 	Plcmtcnt int                   `json:"plcmtcnt,omitempty"`

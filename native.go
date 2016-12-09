@@ -42,8 +42,17 @@ func (v *Native) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	if err := json.Unmarshal([]byte(h.Request), &h.ParsedRequest); err != nil {
+	var nrOuter NativeRequestOuter
+	if err := json.Unmarshal([]byte(h.Request), &nrOuter); err != nil {
 		return err
+	}
+
+	if nrOuter.Native != nil {
+		h.ParsedRequest = nrOuter.Native
+	} else {
+		if err := json.Unmarshal([]byte(h.Request), &h.ParsedRequest); err != nil {
+			return err
+		}
 	}
 
 	*v = (Native)(h)
