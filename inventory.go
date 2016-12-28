@@ -1,4 +1,5 @@
 package openrtb
+
 //go:generate ffjson -force-regenerate $GOFILE
 
 import "encoding/json"
@@ -33,7 +34,7 @@ type App struct {
 	Bundle   string `json:"bundle,omitempty"`   // App bundle or package name
 	StoreURL string `json:"storeurl,omitempty"` // App store URL for an installed app
 	Ver      string `json:"ver,omitempty"`      // App version
-	Paid     int    `json:"paid,omitempty"`     // "1": Paid, "2": Free
+	// Paid     int    `json:"paid,omitempty"`     // "1": Paid, "2": Free
 }
 
 // A site object should be included if the ad supported content is part of a website (as opposed to

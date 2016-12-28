@@ -49,11 +49,6 @@ func (mj *App) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.WriteJsonString(buf, string(mj.Ver))
 		buf.WriteByte(',')
 	}
-	if mj.Paid != 0 {
-		buf.WriteString(`"paid":`)
-		fflib.FormatBits2(buf, uint64(mj.Paid), 10, mj.Paid < 0)
-		buf.WriteByte(',')
-	}
 	if len(mj.ID) != 0 {
 		buf.WriteString(`"id":`)
 		fflib.WriteJsonString(buf, string(mj.ID))
@@ -186,8 +181,6 @@ const (
 
 	ffj_t_App_Ver
 
-	ffj_t_App_Paid
-
 	ffj_t_App_ID
 
 	ffj_t_App_Name
@@ -216,8 +209,6 @@ var ffj_key_App_Bundle = []byte("bundle")
 var ffj_key_App_StoreURL = []byte("storeurl")
 
 var ffj_key_App_Ver = []byte("ver")
-
-var ffj_key_App_Paid = []byte("paid")
 
 var ffj_key_App_ID = []byte("id")
 
@@ -363,12 +354,7 @@ mainparse:
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_App_Paid, kn) {
-						currentKey = ffj_t_App_Paid
-						state = fflib.FFParse_want_colon
-						goto mainparse
-
-					} else if bytes.Equal(ffj_key_App_PageCat, kn) {
+					if bytes.Equal(ffj_key_App_PageCat, kn) {
 						currentKey = ffj_t_App_PageCat
 						state = fflib.FFParse_want_colon
 						goto mainparse
@@ -473,12 +459,6 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffj_key_App_Paid, kn) {
-					currentKey = ffj_t_App_Paid
-					state = fflib.FFParse_want_colon
-					goto mainparse
-				}
-
 				if fflib.SimpleLetterEqualFold(ffj_key_App_Ver, kn) {
 					currentKey = ffj_t_App_Ver
 					state = fflib.FFParse_want_colon
@@ -522,9 +502,6 @@ mainparse:
 
 				case ffj_t_App_Ver:
 					goto handle_Ver
-
-				case ffj_t_App_Paid:
-					goto handle_Paid
 
 				case ffj_t_App_ID:
 					goto handle_ID
@@ -644,36 +621,6 @@ handle_Ver:
 			outBuf := fs.Output.Bytes()
 
 			uj.Ver = string(string(outBuf))
-
-		}
-	}
-
-	state = fflib.FFParse_after_value
-	goto mainparse
-
-handle_Paid:
-
-	/* handler: uj.Paid type=int kind=int quoted=false*/
-
-	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.Paid = int(tval)
 
 		}
 	}
