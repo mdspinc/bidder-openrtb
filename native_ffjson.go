@@ -36,6 +36,15 @@ func (mj *jsonNative) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteString(`{ "request":`)
 	fflib.WriteJsonString(buf, string(mj.Request))
 	buf.WriteByte(',')
+	if mj.Ver != nil {
+		buf.WriteString(`"ver":`)
+		/* Interface types must use runtime reflection. type=interface {} kind=interface */
+		err = buf.Encode(mj.Ver)
+		if err != nil {
+			return err
+		}
+		buf.WriteByte(',')
+	}
 	if len(mj.API) != 0 {
 		buf.WriteString(`"api":`)
 		if mj.API != nil {
@@ -95,6 +104,8 @@ const (
 
 	ffj_t_jsonNative_Request
 
+	ffj_t_jsonNative_Ver
+
 	ffj_t_jsonNative_API
 
 	ffj_t_jsonNative_BAttr
@@ -103,6 +114,8 @@ const (
 )
 
 var ffj_key_jsonNative_Request = []byte("request")
+
+var ffj_key_jsonNative_Ver = []byte("ver")
 
 var ffj_key_jsonNative_API = []byte("api")
 
@@ -201,6 +214,14 @@ mainparse:
 						goto mainparse
 					}
 
+				case 'v':
+
+					if bytes.Equal(ffj_key_jsonNative_Ver, kn) {
+						currentKey = ffj_t_jsonNative_Ver
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				}
 
 				if fflib.SimpleLetterEqualFold(ffj_key_jsonNative_Ext, kn) {
@@ -217,6 +238,12 @@ mainparse:
 
 				if fflib.SimpleLetterEqualFold(ffj_key_jsonNative_API, kn) {
 					currentKey = ffj_t_jsonNative_API
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_jsonNative_Ver, kn) {
+					currentKey = ffj_t_jsonNative_Ver
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -246,6 +273,9 @@ mainparse:
 
 				case ffj_t_jsonNative_Request:
 					goto handle_Request
+
+				case ffj_t_jsonNative_Ver:
+					goto handle_Ver
 
 				case ffj_t_jsonNative_API:
 					goto handle_API
@@ -290,6 +320,26 @@ handle_Request:
 
 			uj.Request = string(string(outBuf))
 
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Ver:
+
+	/* handler: uj.Ver type=interface {} kind=interface quoted=false*/
+
+	{
+		/* Falling back. type=interface {} kind=interface */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		err = json.Unmarshal(tbuf, &uj.Ver)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
 	}
 

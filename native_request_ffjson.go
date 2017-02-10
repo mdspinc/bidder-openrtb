@@ -34,9 +34,13 @@ func (mj *NativeRequest) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ `)
-	if len(mj.Ver) != 0 {
+	if mj.Ver != nil {
 		buf.WriteString(`"ver":`)
-		fflib.WriteJsonString(buf, string(mj.Ver))
+		/* Interface types must use runtime reflection. type=interface {} kind=interface */
+		err = buf.Encode(mj.Ver)
+		if err != nil {
+			return err
+		}
 		buf.WriteByte(',')
 	}
 	if mj.Layout != 0 {
@@ -352,24 +356,18 @@ mainparse:
 
 handle_Ver:
 
-	/* handler: uj.Ver type=string kind=string quoted=false*/
+	/* handler: uj.Ver type=interface {} kind=interface quoted=false*/
 
 	{
-
-		{
-			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
-				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
-			}
+		/* Falling back. type=interface {} kind=interface */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
 
-		if tok == fflib.FFTok_null {
-
-		} else {
-
-			outBuf := fs.Output.Bytes()
-
-			uj.Ver = string(string(outBuf))
-
+		err = json.Unmarshal(tbuf, &uj.Ver)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
 	}
 
