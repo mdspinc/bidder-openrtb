@@ -1,4 +1,5 @@
 package openrtb
+
 //go:generate ffjson -force-regenerate $GOFILE
 
 import "encoding/json"
@@ -31,9 +32,11 @@ type Device struct {
 	FlashVer   string           `json:"flashver,omitempty"` // Flash version
 	IFA        string           `json:"ifa,omitempty"`      // Native identifier for advertisers
 	Ext        *json.RawMessage `json:"ext,omitempty"`
-	H          int              `json:"h,omitempty"`       // Physical height of the screen in pixels.
-	W          int              `json:"w,omitempty"`       // Physical width of the screen in pixels.
-	PPI        int              `json:"ppi,omitempty"`     // Screen size as pixels per linear inch.
-	PxRatio    float64          `json:"pxratio,omitempty"` // The ratio of physical pixels to device independent pixels.
-	HwVer      string           `json:"hwv,omitempty"`     // Hardware version of the device (e.g., "5S" for iPhone 5S).
+	H          int              `json:"h,omitempty"`        // Physical height of the screen in pixels.
+	W          int              `json:"w,omitempty"`        // Physical width of the screen in pixels.
+	PPI        int              `json:"ppi,omitempty"`      // Screen size as pixels per linear inch.
+	PxRatio    float64          `json:"pxratio,omitempty"`  // The ratio of physical pixels to device independent pixels.
+	HwVer      string           `json:"hwv,omitempty"`      // Hardware version of the device (e.g., "5S" for iPhone 5S).
+	MccMnc     string           `json:"mccmnc,omitempty"`   // Mobile carrier as the concatenated MCC-MNC code
+	Geofetch   int              `json:"geofetch,omitempty"` // Indicates if the geolocation API will be available to JavaScript code running in the banner, where 0 = no, 1 = yes.
 }
