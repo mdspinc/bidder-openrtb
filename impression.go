@@ -1,4 +1,5 @@
 package openrtb
+
 //go:generate ffjson -force-regenerate $GOFILE
 
 import (
@@ -32,6 +33,7 @@ type Impression struct {
 	Secure            int              `json:"secure,omitempty"`            // Flag to indicate whether the impression requires secure HTTPS URL creative assets and markup.
 	IFrameBuster      []string         `json:"iframebuster,omitempty"`      // Array of names for supportediframe busters.
 	Pmp               *Pmp             `json:"pmp,omitempty"`               // A reference to the PMP object containing any Deals eligible for the impression object.
+	Exp               int              `json:"exp,omitempty"`               // Advisory as to the number of seconds that may elapse between the auction and the actual impression.
 	Ext               *json.RawMessage `json:"ext,omitempty"`
 }
 

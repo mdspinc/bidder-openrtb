@@ -1,4 +1,5 @@
 package openrtb
+
 //go:generate ffjson -force-regenerate $GOFILE
 
 import (
@@ -30,6 +31,7 @@ type BidRequest struct {
 	Cur         []string         `json:"cur,omitempty"`     // Array of allowed currencies
 	Bcat        []string         `json:"bcat,omitempty"`    // Blocked Advertiser Categories.
 	BAdv        []string         `json:"badv,omitempty"`    // Array of strings of blocked toplevel domains of advertisers
+	Exp         int              `json:"exp,omitempty"`     // Advisory as to the number of seconds the bidder is willing to  wait between the auction and the actual impression.
 	Regs        *Regulations     `json:"regs,omitempty"`
 	Ext         *json.RawMessage `json:"ext,omitempty"`
 

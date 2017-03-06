@@ -136,14 +136,23 @@ func (mj *Impression) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Pmp != nil {
 		if true {
-			/* Struct fall back. type=openrtb.Pmp kind=struct */
 			buf.WriteString(`"pmp":`)
-			err = buf.Encode(mj.Pmp)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.Pmp.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
+	}
+	if mj.Exp != 0 {
+		buf.WriteString(`"exp":`)
+		fflib.FormatBits2(buf, uint64(mj.Exp), 10, mj.Exp < 0)
+		buf.WriteByte(',')
 	}
 	if mj.Ext != nil {
 		if true {
@@ -196,6 +205,8 @@ const (
 
 	ffj_t_Impression_Pmp
 
+	ffj_t_Impression_Exp
+
 	ffj_t_Impression_Ext
 )
 
@@ -224,6 +235,8 @@ var ffj_key_Impression_Secure = []byte("secure")
 var ffj_key_Impression_IFrameBuster = []byte("iframebuster")
 
 var ffj_key_Impression_Pmp = []byte("pmp")
+
+var ffj_key_Impression_Exp = []byte("exp")
 
 var ffj_key_Impression_Ext = []byte("ext")
 
@@ -319,7 +332,12 @@ mainparse:
 
 				case 'e':
 
-					if bytes.Equal(ffj_key_Impression_Ext, kn) {
+					if bytes.Equal(ffj_key_Impression_Exp, kn) {
+						currentKey = ffj_t_Impression_Exp
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Impression_Ext, kn) {
 						currentKey = ffj_t_Impression_Ext
 						state = fflib.FFParse_want_colon
 						goto mainparse
@@ -387,6 +405,12 @@ mainparse:
 
 				if fflib.SimpleLetterEqualFold(ffj_key_Impression_Ext, kn) {
 					currentKey = ffj_t_Impression_Ext
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Impression_Exp, kn) {
+					currentKey = ffj_t_Impression_Exp
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -524,6 +548,9 @@ mainparse:
 
 				case ffj_t_Impression_Pmp:
 					goto handle_Pmp
+
+				case ffj_t_Impression_Exp:
+					goto handle_Exp
 
 				case ffj_t_Impression_Ext:
 					goto handle_Ext
@@ -932,15 +959,52 @@ handle_Pmp:
 	/* handler: uj.Pmp type=openrtb.Pmp kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.Pmp kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.Pmp = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Pmp)
+		if uj.Pmp == nil {
+			uj.Pmp = new(Pmp)
+		}
+
+		err = uj.Pmp.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 		if err != nil {
-			return fs.WrapErr(err)
+			return err
+		}
+		state = fflib.FFParse_after_value
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Exp:
+
+	/* handler: uj.Exp type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.Exp = int(tval)
+
 		}
 	}
 
