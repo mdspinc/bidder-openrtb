@@ -231,9 +231,9 @@ func (mj *NativeAdMarkupInner) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ `)
-	if mj.Ver != 0 {
+	if len(mj.Ver) != 0 {
 		buf.WriteString(`"ver":`)
-		fflib.FormatBits2(buf, uint64(mj.Ver), 10, mj.Ver < 0)
+		fflib.WriteJsonString(buf, string(mj.Ver))
 		buf.WriteByte(',')
 	}
 	buf.WriteString(`"assets":`)
@@ -535,27 +535,23 @@ mainparse:
 
 handle_Ver:
 
-	/* handler: uj.Ver type=int kind=int quoted=false*/
+	/* handler: uj.Ver type=string kind=string quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
 		}
-	}
-
-	{
 
 		if tok == fflib.FFTok_null {
 
 		} else {
 
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+			outBuf := fs.Output.Bytes()
 
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.Ver = int(tval)
+			uj.Ver = string(string(outBuf))
 
 		}
 	}

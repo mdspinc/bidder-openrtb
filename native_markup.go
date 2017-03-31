@@ -9,7 +9,7 @@ type NativeAdMarkup struct {
 }
 
 type NativeAdMarkupInner struct {
-	Ver         int              `json:"ver,omitempty"`
+	Ver         string           `json:"ver,omitempty"`
 	Assets      []NativeAsset    `json:"assets"`
 	Link        NativeLink       `json:"link"`
 	ImpTrackers []string         `json:"imptrackers,omitempty"`
