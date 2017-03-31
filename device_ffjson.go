@@ -196,6 +196,16 @@ func (mj *Device) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.WriteJsonString(buf, string(mj.HwVer))
 		buf.WriteByte(',')
 	}
+	if len(mj.MccMnc) != 0 {
+		buf.WriteString(`"mccmnc":`)
+		fflib.WriteJsonString(buf, string(mj.MccMnc))
+		buf.WriteByte(',')
+	}
+	if mj.Geofetch != 0 {
+		buf.WriteString(`"geofetch":`)
+		fflib.FormatBits2(buf, uint64(mj.Geofetch), 10, mj.Geofetch < 0)
+		buf.WriteByte(',')
+	}
 	buf.Rewind(1)
 	buf.WriteByte('}')
 	return nil
@@ -262,6 +272,10 @@ const (
 	ffj_t_Device_PxRatio
 
 	ffj_t_Device_HwVer
+
+	ffj_t_Device_MccMnc
+
+	ffj_t_Device_Geofetch
 )
 
 var ffj_key_Device_DNT = []byte("dnt")
@@ -321,6 +335,10 @@ var ffj_key_Device_PPI = []byte("ppi")
 var ffj_key_Device_PxRatio = []byte("pxratio")
 
 var ffj_key_Device_HwVer = []byte("hwv")
+
+var ffj_key_Device_MccMnc = []byte("mccmnc")
+
+var ffj_key_Device_Geofetch = []byte("geofetch")
 
 func (uj *Device) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
@@ -449,6 +467,11 @@ mainparse:
 						currentKey = ffj_t_Device_Geo
 						state = fflib.FFParse_want_colon
 						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Device_Geofetch, kn) {
+						currentKey = ffj_t_Device_Geofetch
+						state = fflib.FFParse_want_colon
+						goto mainparse
 					}
 
 				case 'h':
@@ -524,6 +547,11 @@ mainparse:
 						currentKey = ffj_t_Device_Model
 						state = fflib.FFParse_want_colon
 						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Device_MccMnc, kn) {
+						currentKey = ffj_t_Device_MccMnc
+						state = fflib.FFParse_want_colon
+						goto mainparse
 					}
 
 				case 'o':
@@ -568,6 +596,18 @@ mainparse:
 						goto mainparse
 					}
 
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Device_Geofetch, kn) {
+					currentKey = ffj_t_Device_Geofetch
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Device_MccMnc, kn) {
+					currentKey = ffj_t_Device_MccMnc
+					state = fflib.FFParse_want_colon
+					goto mainparse
 				}
 
 				if fflib.SimpleLetterEqualFold(ffj_key_Device_HwVer, kn) {
@@ -847,6 +887,12 @@ mainparse:
 
 				case ffj_t_Device_HwVer:
 					goto handle_HwVer
+
+				case ffj_t_Device_MccMnc:
+					goto handle_MccMnc
+
+				case ffj_t_Device_Geofetch:
+					goto handle_Geofetch
 
 				case ffj_t_Deviceno_such_key:
 					err = fs.SkipField(tok)
@@ -1645,6 +1691,62 @@ handle_HwVer:
 			outBuf := fs.Output.Bytes()
 
 			uj.HwVer = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_MccMnc:
+
+	/* handler: uj.MccMnc type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.MccMnc = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Geofetch:
+
+	/* handler: uj.Geofetch type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.Geofetch = int(tval)
 
 		}
 	}
