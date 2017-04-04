@@ -93,6 +93,21 @@ func (mj *jsonNative) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
+	if mj.ParsedRequest != nil {
+		if true {
+			buf.WriteString(`"_parsed_request":`)
+
+			{
+
+				err = mj.ParsedRequest.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
+			}
+			buf.WriteByte(',')
+		}
+	}
 	buf.Rewind(1)
 	buf.WriteByte('}')
 	return nil
@@ -111,6 +126,8 @@ const (
 	ffj_t_jsonNative_BAttr
 
 	ffj_t_jsonNative_Ext
+
+	ffj_t_jsonNative_ParsedRequest
 )
 
 var ffj_key_jsonNative_Request = []byte("request")
@@ -122,6 +139,8 @@ var ffj_key_jsonNative_API = []byte("api")
 var ffj_key_jsonNative_BAttr = []byte("battr")
 
 var ffj_key_jsonNative_Ext = []byte("ext")
+
+var ffj_key_jsonNative_ParsedRequest = []byte("_parsed_request")
 
 func (uj *jsonNative) UnmarshalJSON(input []byte) error {
 	fs := fflib.NewFFLexer(input)
@@ -182,6 +201,14 @@ mainparse:
 			} else {
 				switch kn[0] {
 
+				case '_':
+
+					if bytes.Equal(ffj_key_jsonNative_ParsedRequest, kn) {
+						currentKey = ffj_t_jsonNative_ParsedRequest
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				case 'a':
 
 					if bytes.Equal(ffj_key_jsonNative_API, kn) {
@@ -222,6 +249,12 @@ mainparse:
 						goto mainparse
 					}
 
+				}
+
+				if fflib.EqualFoldRight(ffj_key_jsonNative_ParsedRequest, kn) {
+					currentKey = ffj_t_jsonNative_ParsedRequest
+					state = fflib.FFParse_want_colon
+					goto mainparse
 				}
 
 				if fflib.SimpleLetterEqualFold(ffj_key_jsonNative_Ext, kn) {
@@ -285,6 +318,9 @@ mainparse:
 
 				case ffj_t_jsonNative_Ext:
 					goto handle_Ext
+
+				case ffj_t_jsonNative_ParsedRequest:
+					goto handle_ParsedRequest
 
 				case ffj_t_jsonNativeno_such_key:
 					err = fs.SkipField(tok)
@@ -527,6 +563,33 @@ handle_Ext:
 		err = uj.Ext.UnmarshalJSON(tbuf)
 		if err != nil {
 			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_ParsedRequest:
+
+	/* handler: uj.ParsedRequest type=openrtb.NativeRequest kind=struct quoted=false*/
+
+	{
+		if tok == fflib.FFTok_null {
+
+			uj.ParsedRequest = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
+		}
+
+		if uj.ParsedRequest == nil {
+			uj.ParsedRequest = new(NativeRequest)
+		}
+
+		err = uj.ParsedRequest.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
 		}
 		state = fflib.FFParse_after_value
 	}
