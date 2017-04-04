@@ -18,7 +18,7 @@ type Native struct {
 	BAttr   []int            `json:"battr,omitempty"` // Blocked creative attributes
 	Ext     *json.RawMessage `json:"ext,omitempty"`
 
-	ParsedRequest *NativeRequest `json:"-"` // custom field for parsed request payload
+	ParsedRequest *NativeRequest `json:"_parsed_request,omitempty"` // custom field for parsed request payload
 }
 
 type jsonNative Native
