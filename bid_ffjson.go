@@ -50,6 +50,16 @@ func (mj *Bid) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.WriteJsonString(buf, string(mj.NURL))
 		buf.WriteByte(',')
 	}
+	if len(mj.BURL) != 0 {
+		buf.WriteString(`"burl":`)
+		fflib.WriteJsonString(buf, string(mj.BURL))
+		buf.WriteByte(',')
+	}
+	if len(mj.LURL) != 0 {
+		buf.WriteString(`"lurl":`)
+		fflib.WriteJsonString(buf, string(mj.LURL))
+		buf.WriteByte(',')
+	}
 	if len(mj.AdMarkup) != 0 {
 		buf.WriteString(`"adm":`)
 		fflib.WriteJsonString(buf, string(mj.AdMarkup))
@@ -76,6 +86,16 @@ func (mj *Bid) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.WriteJsonString(buf, string(mj.IURL))
 		buf.WriteByte(',')
 	}
+	if len(mj.Tactic) != 0 {
+		buf.WriteString(`"tactic":`)
+		fflib.WriteJsonString(buf, string(mj.Tactic))
+		buf.WriteByte(',')
+	}
+	if len(mj.Bundle) != 0 {
+		buf.WriteString(`"bundle":`)
+		fflib.WriteJsonString(buf, string(mj.Bundle))
+		buf.WriteByte(',')
+	}
 	if len(mj.CampaignID) != 0 {
 		buf.WriteString(`"cid":`)
 		fflib.WriteJsonString(buf, string(mj.CampaignID))
@@ -84,6 +104,16 @@ func (mj *Bid) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	if len(mj.CreativeID) != 0 {
 		buf.WriteString(`"crid":`)
 		fflib.WriteJsonString(buf, string(mj.CreativeID))
+		buf.WriteByte(',')
+	}
+	if mj.Qagmediarating != 0 {
+		buf.WriteString(`"qagmediarating":`)
+		fflib.FormatBits2(buf, uint64(mj.Qagmediarating), 10, mj.Qagmediarating < 0)
+		buf.WriteByte(',')
+	}
+	if len(mj.Language) != 0 {
+		buf.WriteString(`"language":`)
+		fflib.WriteJsonString(buf, string(mj.Language))
 		buf.WriteByte(',')
 	}
 	if len(mj.Cat) != 0 {
@@ -118,6 +148,16 @@ func (mj *Bid) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		}
 		buf.WriteByte(',')
 	}
+	if len(mj.API) != 0 {
+		buf.WriteString(`"api":`)
+		fflib.WriteJsonString(buf, string(mj.API))
+		buf.WriteByte(',')
+	}
+	if mj.Protocol != 0 {
+		buf.WriteString(`"protocol":`)
+		fflib.FormatBits2(buf, uint64(mj.Protocol), 10, mj.Protocol < 0)
+		buf.WriteByte(',')
+	}
 	if len(mj.DealID) != 0 {
 		buf.WriteString(`"dealid":`)
 		fflib.WriteJsonString(buf, string(mj.DealID))
@@ -131,6 +171,21 @@ func (mj *Bid) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	if mj.W != 0 {
 		buf.WriteString(`"w":`)
 		fflib.FormatBits2(buf, uint64(mj.W), 10, mj.W < 0)
+		buf.WriteByte(',')
+	}
+	if mj.Wratio != 0 {
+		buf.WriteString(`"wratio":`)
+		fflib.FormatBits2(buf, uint64(mj.Wratio), 10, mj.Wratio < 0)
+		buf.WriteByte(',')
+	}
+	if mj.Hratio != 0 {
+		buf.WriteString(`"hratio":`)
+		fflib.FormatBits2(buf, uint64(mj.Hratio), 10, mj.Hratio < 0)
+		buf.WriteByte(',')
+	}
+	if mj.Exp != 0 {
+		buf.WriteString(`"exp":`)
+		fflib.FormatBits2(buf, uint64(mj.Exp), 10, mj.Exp < 0)
 		buf.WriteByte(',')
 	}
 	if mj.Ext != nil {
@@ -168,25 +223,47 @@ const (
 
 	ffj_t_Bid_NURL
 
+	ffj_t_Bid_BURL
+
+	ffj_t_Bid_LURL
+
 	ffj_t_Bid_AdMarkup
 
 	ffj_t_Bid_AdvDomain
 
 	ffj_t_Bid_IURL
 
+	ffj_t_Bid_Tactic
+
+	ffj_t_Bid_Bundle
+
 	ffj_t_Bid_CampaignID
 
 	ffj_t_Bid_CreativeID
 
+	ffj_t_Bid_Qagmediarating
+
+	ffj_t_Bid_Language
+
 	ffj_t_Bid_Cat
 
 	ffj_t_Bid_Attr
+
+	ffj_t_Bid_API
+
+	ffj_t_Bid_Protocol
 
 	ffj_t_Bid_DealID
 
 	ffj_t_Bid_H
 
 	ffj_t_Bid_W
+
+	ffj_t_Bid_Wratio
+
+	ffj_t_Bid_Hratio
+
+	ffj_t_Bid_Exp
 
 	ffj_t_Bid_Ext
 )
@@ -201,25 +278,47 @@ var ffj_key_Bid_AdID = []byte("adid")
 
 var ffj_key_Bid_NURL = []byte("nurl")
 
+var ffj_key_Bid_BURL = []byte("burl")
+
+var ffj_key_Bid_LURL = []byte("lurl")
+
 var ffj_key_Bid_AdMarkup = []byte("adm")
 
 var ffj_key_Bid_AdvDomain = []byte("adomain")
 
 var ffj_key_Bid_IURL = []byte("iurl")
 
+var ffj_key_Bid_Tactic = []byte("tactic")
+
+var ffj_key_Bid_Bundle = []byte("bundle")
+
 var ffj_key_Bid_CampaignID = []byte("cid")
 
 var ffj_key_Bid_CreativeID = []byte("crid")
 
+var ffj_key_Bid_Qagmediarating = []byte("qagmediarating")
+
+var ffj_key_Bid_Language = []byte("language")
+
 var ffj_key_Bid_Cat = []byte("cat")
 
 var ffj_key_Bid_Attr = []byte("attr")
+
+var ffj_key_Bid_API = []byte("api")
+
+var ffj_key_Bid_Protocol = []byte("protocol")
 
 var ffj_key_Bid_DealID = []byte("dealid")
 
 var ffj_key_Bid_H = []byte("h")
 
 var ffj_key_Bid_W = []byte("w")
+
+var ffj_key_Bid_Wratio = []byte("wratio")
+
+var ffj_key_Bid_Hratio = []byte("hratio")
+
+var ffj_key_Bid_Exp = []byte("exp")
 
 var ffj_key_Bid_Ext = []byte("ext")
 
@@ -303,6 +402,24 @@ mainparse:
 						currentKey = ffj_t_Bid_Attr
 						state = fflib.FFParse_want_colon
 						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Bid_API, kn) {
+						currentKey = ffj_t_Bid_API
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 'b':
+
+					if bytes.Equal(ffj_key_Bid_BURL, kn) {
+						currentKey = ffj_t_Bid_BURL
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Bid_Bundle, kn) {
+						currentKey = ffj_t_Bid_Bundle
+						state = fflib.FFParse_want_colon
+						goto mainparse
 					}
 
 				case 'c':
@@ -333,7 +450,12 @@ mainparse:
 
 				case 'e':
 
-					if bytes.Equal(ffj_key_Bid_Ext, kn) {
+					if bytes.Equal(ffj_key_Bid_Exp, kn) {
+						currentKey = ffj_t_Bid_Exp
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Bid_Ext, kn) {
 						currentKey = ffj_t_Bid_Ext
 						state = fflib.FFParse_want_colon
 						goto mainparse
@@ -343,6 +465,11 @@ mainparse:
 
 					if bytes.Equal(ffj_key_Bid_H, kn) {
 						currentKey = ffj_t_Bid_H
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Bid_Hratio, kn) {
+						currentKey = ffj_t_Bid_Hratio
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -365,6 +492,19 @@ mainparse:
 						goto mainparse
 					}
 
+				case 'l':
+
+					if bytes.Equal(ffj_key_Bid_LURL, kn) {
+						currentKey = ffj_t_Bid_LURL
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Bid_Language, kn) {
+						currentKey = ffj_t_Bid_Language
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				case 'n':
 
 					if bytes.Equal(ffj_key_Bid_NURL, kn) {
@@ -379,6 +519,27 @@ mainparse:
 						currentKey = ffj_t_Bid_Price
 						state = fflib.FFParse_want_colon
 						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Bid_Protocol, kn) {
+						currentKey = ffj_t_Bid_Protocol
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 'q':
+
+					if bytes.Equal(ffj_key_Bid_Qagmediarating, kn) {
+						currentKey = ffj_t_Bid_Qagmediarating
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 't':
+
+					if bytes.Equal(ffj_key_Bid_Tactic, kn) {
+						currentKey = ffj_t_Bid_Tactic
+						state = fflib.FFParse_want_colon
+						goto mainparse
 					}
 
 				case 'w':
@@ -387,12 +548,35 @@ mainparse:
 						currentKey = ffj_t_Bid_W
 						state = fflib.FFParse_want_colon
 						goto mainparse
+
+					} else if bytes.Equal(ffj_key_Bid_Wratio, kn) {
+						currentKey = ffj_t_Bid_Wratio
+						state = fflib.FFParse_want_colon
+						goto mainparse
 					}
 
 				}
 
 				if fflib.SimpleLetterEqualFold(ffj_key_Bid_Ext, kn) {
 					currentKey = ffj_t_Bid_Ext
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_Exp, kn) {
+					currentKey = ffj_t_Bid_Exp
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_Hratio, kn) {
+					currentKey = ffj_t_Bid_Hratio
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_Wratio, kn) {
+					currentKey = ffj_t_Bid_Wratio
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -415,6 +599,18 @@ mainparse:
 					goto mainparse
 				}
 
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_Protocol, kn) {
+					currentKey = ffj_t_Bid_Protocol
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_API, kn) {
+					currentKey = ffj_t_Bid_API
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
 				if fflib.SimpleLetterEqualFold(ffj_key_Bid_Attr, kn) {
 					currentKey = ffj_t_Bid_Attr
 					state = fflib.FFParse_want_colon
@@ -427,6 +623,18 @@ mainparse:
 					goto mainparse
 				}
 
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_Language, kn) {
+					currentKey = ffj_t_Bid_Language
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_Qagmediarating, kn) {
+					currentKey = ffj_t_Bid_Qagmediarating
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
 				if fflib.SimpleLetterEqualFold(ffj_key_Bid_CreativeID, kn) {
 					currentKey = ffj_t_Bid_CreativeID
 					state = fflib.FFParse_want_colon
@@ -435,6 +643,18 @@ mainparse:
 
 				if fflib.SimpleLetterEqualFold(ffj_key_Bid_CampaignID, kn) {
 					currentKey = ffj_t_Bid_CampaignID
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_Bundle, kn) {
+					currentKey = ffj_t_Bid_Bundle
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_Tactic, kn) {
+					currentKey = ffj_t_Bid_Tactic
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -453,6 +673,18 @@ mainparse:
 
 				if fflib.SimpleLetterEqualFold(ffj_key_Bid_AdMarkup, kn) {
 					currentKey = ffj_t_Bid_AdMarkup
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_LURL, kn) {
+					currentKey = ffj_t_Bid_LURL
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffj_key_Bid_BURL, kn) {
+					currentKey = ffj_t_Bid_BURL
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -519,6 +751,12 @@ mainparse:
 				case ffj_t_Bid_NURL:
 					goto handle_NURL
 
+				case ffj_t_Bid_BURL:
+					goto handle_BURL
+
+				case ffj_t_Bid_LURL:
+					goto handle_LURL
+
 				case ffj_t_Bid_AdMarkup:
 					goto handle_AdMarkup
 
@@ -528,17 +766,35 @@ mainparse:
 				case ffj_t_Bid_IURL:
 					goto handle_IURL
 
+				case ffj_t_Bid_Tactic:
+					goto handle_Tactic
+
+				case ffj_t_Bid_Bundle:
+					goto handle_Bundle
+
 				case ffj_t_Bid_CampaignID:
 					goto handle_CampaignID
 
 				case ffj_t_Bid_CreativeID:
 					goto handle_CreativeID
 
+				case ffj_t_Bid_Qagmediarating:
+					goto handle_Qagmediarating
+
+				case ffj_t_Bid_Language:
+					goto handle_Language
+
 				case ffj_t_Bid_Cat:
 					goto handle_Cat
 
 				case ffj_t_Bid_Attr:
 					goto handle_Attr
+
+				case ffj_t_Bid_API:
+					goto handle_API
+
+				case ffj_t_Bid_Protocol:
+					goto handle_Protocol
 
 				case ffj_t_Bid_DealID:
 					goto handle_DealID
@@ -548,6 +804,15 @@ mainparse:
 
 				case ffj_t_Bid_W:
 					goto handle_W
+
+				case ffj_t_Bid_Wratio:
+					goto handle_Wratio
+
+				case ffj_t_Bid_Hratio:
+					goto handle_Hratio
+
+				case ffj_t_Bid_Exp:
+					goto handle_Exp
 
 				case ffj_t_Bid_Ext:
 					goto handle_Ext
@@ -700,6 +965,58 @@ handle_NURL:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
+handle_BURL:
+
+	/* handler: uj.BURL type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.BURL = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_LURL:
+
+	/* handler: uj.LURL type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.LURL = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
 handle_AdMarkup:
 
 	/* handler: uj.AdMarkup type=string kind=string quoted=false*/
@@ -826,6 +1143,58 @@ handle_IURL:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
+handle_Tactic:
+
+	/* handler: uj.Tactic type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.Tactic = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Bundle:
+
+	/* handler: uj.Bundle type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.Bundle = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
 handle_CampaignID:
 
 	/* handler: uj.CampaignID type=string kind=string quoted=false*/
@@ -871,6 +1240,62 @@ handle_CreativeID:
 			outBuf := fs.Output.Bytes()
 
 			uj.CreativeID = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Qagmediarating:
+
+	/* handler: uj.Qagmediarating type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.Qagmediarating = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Language:
+
+	/* handler: uj.Language type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.Language = string(string(outBuf))
 
 		}
 	}
@@ -1030,6 +1455,62 @@ handle_Attr:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
+handle_API:
+
+	/* handler: uj.API type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			uj.API = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Protocol:
+
+	/* handler: uj.Protocol type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.Protocol = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
 handle_DealID:
 
 	/* handler: uj.DealID type=string kind=string quoted=false*/
@@ -1109,6 +1590,96 @@ handle_W:
 			}
 
 			uj.W = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Wratio:
+
+	/* handler: uj.Wratio type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.Wratio = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Hratio:
+
+	/* handler: uj.Hratio type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.Hratio = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Exp:
+
+	/* handler: uj.Exp type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			uj.Exp = int(tval)
 
 		}
 	}
