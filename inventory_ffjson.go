@@ -49,6 +49,15 @@ func (mj *App) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.WriteJsonString(buf, string(mj.Ver))
 		buf.WriteByte(',')
 	}
+	if mj.Paid != nil {
+		buf.WriteString(`"paid":`)
+		/* Interface types must use runtime reflection. type=interface {} kind=interface */
+		err = buf.Encode(mj.Paid)
+		if err != nil {
+			return err
+		}
+		buf.WriteByte(',')
+	}
 	if len(mj.ID) != 0 {
 		buf.WriteString(`"id":`)
 		fflib.WriteJsonString(buf, string(mj.ID))
@@ -121,11 +130,15 @@ func (mj *App) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Publisher != nil {
 		if true {
-			/* Struct fall back. type=openrtb.Publisher kind=struct */
 			buf.WriteString(`"publisher":`)
-			err = buf.Encode(mj.Publisher)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.Publisher.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
@@ -181,6 +194,8 @@ const (
 
 	ffj_t_App_Ver
 
+	ffj_t_App_Paid
+
 	ffj_t_App_ID
 
 	ffj_t_App_Name
@@ -209,6 +224,8 @@ var ffj_key_App_Bundle = []byte("bundle")
 var ffj_key_App_StoreURL = []byte("storeurl")
 
 var ffj_key_App_Ver = []byte("ver")
+
+var ffj_key_App_Paid = []byte("paid")
 
 var ffj_key_App_ID = []byte("id")
 
@@ -354,7 +371,12 @@ mainparse:
 
 				case 'p':
 
-					if bytes.Equal(ffj_key_App_PageCat, kn) {
+					if bytes.Equal(ffj_key_App_Paid, kn) {
+						currentKey = ffj_t_App_Paid
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffj_key_App_PageCat, kn) {
 						currentKey = ffj_t_App_PageCat
 						state = fflib.FFParse_want_colon
 						goto mainparse
@@ -459,6 +481,12 @@ mainparse:
 					goto mainparse
 				}
 
+				if fflib.SimpleLetterEqualFold(ffj_key_App_Paid, kn) {
+					currentKey = ffj_t_App_Paid
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
 				if fflib.SimpleLetterEqualFold(ffj_key_App_Ver, kn) {
 					currentKey = ffj_t_App_Ver
 					state = fflib.FFParse_want_colon
@@ -502,6 +530,9 @@ mainparse:
 
 				case ffj_t_App_Ver:
 					goto handle_Ver
+
+				case ffj_t_App_Paid:
+					goto handle_Paid
 
 				case ffj_t_App_ID:
 					goto handle_ID
@@ -622,6 +653,26 @@ handle_Ver:
 
 			uj.Ver = string(string(outBuf))
 
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Paid:
+
+	/* handler: uj.Paid type=interface {} kind=interface quoted=false*/
+
+	{
+		/* Falling back. type=interface {} kind=interface */
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		err = json.Unmarshal(tbuf, &uj.Paid)
+		if err != nil {
+			return fs.WrapErr(err)
 		}
 	}
 
@@ -966,16 +1017,23 @@ handle_Publisher:
 	/* handler: uj.Publisher type=openrtb.Publisher kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.Publisher kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.Publisher = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Publisher)
-		if err != nil {
-			return fs.WrapErr(err)
+		if uj.Publisher == nil {
+			uj.Publisher = new(Publisher)
 		}
+
+		err = uj.Publisher.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -1178,11 +1236,15 @@ func (mj *Inventory) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Publisher != nil {
 		if true {
-			/* Struct fall back. type=openrtb.Publisher kind=struct */
 			buf.WriteString(`"publisher":`)
-			err = buf.Encode(mj.Publisher)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.Publisher.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
@@ -1885,16 +1947,23 @@ handle_Publisher:
 	/* handler: uj.Publisher type=openrtb.Publisher kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.Publisher kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.Publisher = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Publisher)
-		if err != nil {
-			return fs.WrapErr(err)
+		if uj.Publisher == nil {
+			uj.Publisher = new(Publisher)
 		}
+
+		err = uj.Publisher.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -2117,11 +2186,15 @@ func (mj *Site) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Publisher != nil {
 		if true {
-			/* Struct fall back. type=openrtb.Publisher kind=struct */
 			buf.WriteString(`"publisher":`)
-			err = buf.Encode(mj.Publisher)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.Publisher.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
@@ -3010,16 +3083,23 @@ handle_Publisher:
 	/* handler: uj.Publisher type=openrtb.Publisher kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.Publisher kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.Publisher = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Publisher)
-		if err != nil {
-			return fs.WrapErr(err)
+		if uj.Publisher == nil {
+			uj.Publisher = new(Publisher)
 		}
+
+		err = uj.Publisher.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
