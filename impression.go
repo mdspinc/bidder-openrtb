@@ -26,7 +26,7 @@ type Impression struct {
 	Native            *Native          `json:"native,omitempty"`
 	DisplayManager    string           `json:"displaymanager,omitempty"`    // Name of ad mediation partner, SDK technology, etc
 	DisplayManagerVer string           `json:"displaymanagerver,omitempty"` // Version of the above
-	Instl             int              `json:"instl,omitempty"`             // Interstitial, Default: 0 ("1": Interstitial, "0": Something else)
+	Instl             NumberOrBool     `json:"instl,omitempty"`             // Interstitial, Default: 0 ("1": Interstitial, "0": Something else)
 	TagID             string           `json:"tagid,omitempty"`             // IDentifier for specific ad placement or ad tag
 	BidFloor          float64          `json:"bidfloor,omitempty"`          // Bid floor for this impression in CPM
 	BidFloorCurrency  string           `json:"bidfloorcur,omitempty"`       // Currency of bid floor

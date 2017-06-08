@@ -51,3 +51,28 @@ func (n *StringOrNumber) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// NumberOrBool attempts to fix OpenRTB incompatibilities
+// of exchanges. On decoding, it can handle numbers and booleans.
+// On encoding, it will generate a number, as intended by the
+// standard.
+type NumberOrBool int
+
+// UnmarshalJSON implements json.Unmarshaler
+func (n *NumberOrBool) UnmarshalJSON(data []byte) error {
+	var v int
+
+	if data[0] == 't' {
+		v = 1
+	} else if data[0] == 'f' {
+		v = 0
+	} else {
+		err := json.Unmarshal(data, &v)
+		if err != nil {
+			return err
+		}
+	}
+
+	*n = NumberOrBool(v)
+	return nil
+}

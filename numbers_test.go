@@ -52,3 +52,28 @@ var _ = Describe("StringOrNumber", func() {
 	})
 
 })
+
+var _ = Describe("NumberOrBool", func() {
+
+	It("should decode numbers", func() {
+		var n NumberOrBool
+		Expect(json.Unmarshal([]byte(`33`), &n)).To(Succeed())
+		Expect(n).To(Equal(NumberOrBool(33)))
+	})
+
+	It("should decode booleans", func() {
+		var n NumberOrBool
+		Expect(json.Unmarshal([]byte(`true`), &n)).To(Succeed())
+		Expect(n).To(Equal(NumberOrBool(1)))
+		Expect(json.Unmarshal([]byte(`false`), &n)).To(Succeed())
+		Expect(n).To(Equal(NumberOrBool(0)))
+	})
+
+	It("should encode to numbers", func() {
+		var n NumberOrBool = 33
+		bin, err := json.Marshal(n)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(bin)).To(Equal(`33`))
+	})
+
+})
