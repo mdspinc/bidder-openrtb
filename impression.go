@@ -30,7 +30,7 @@ type Impression struct {
 	TagID             string           `json:"tagid,omitempty"`             // IDentifier for specific ad placement or ad tag
 	BidFloor          float64          `json:"bidfloor,omitempty"`          // Bid floor for this impression in CPM
 	BidFloorCurrency  string           `json:"bidfloorcur,omitempty"`       // Currency of bid floor
-	Secure            int              `json:"secure,omitempty"`            // Flag to indicate whether the impression requires secure HTTPS URL creative assets and markup.
+	Secure            NumberOrBool     `json:"secure,omitempty"`            // Flag to indicate whether the impression requires secure HTTPS URL creative assets and markup.
 	IFrameBuster      []string         `json:"iframebuster,omitempty"`      // Array of names for supportediframe busters.
 	Pmp               *Pmp             `json:"pmp,omitempty"`               // A reference to the PMP object containing any Deals eligible for the impression object.
 	Exp               int              `json:"exp,omitempty"`               // Advisory as to the number of seconds that may elapse between the auction and the actual impression.

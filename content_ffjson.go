@@ -935,29 +935,25 @@ handle_Keywords:
 
 handle_LiveStream:
 
-	/* handler: uj.LiveStream type=int kind=int quoted=false*/
+	/* handler: uj.LiveStream type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
 		if tok == fflib.FFTok_null {
 
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.LiveStream = int(tval)
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		err = uj.LiveStream.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -965,29 +961,25 @@ handle_LiveStream:
 
 handle_SourceRelationship:
 
-	/* handler: uj.SourceRelationship type=int kind=int quoted=false*/
+	/* handler: uj.SourceRelationship type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
 		if tok == fflib.FFTok_null {
 
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.SourceRelationship = int(tval)
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		err = uj.SourceRelationship.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -1051,29 +1043,25 @@ handle_Language:
 
 handle_Embeddable:
 
-	/* handler: uj.Embeddable type=int kind=int quoted=false*/
+	/* handler: uj.Embeddable type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
 		if tok == fflib.FFTok_null {
 
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.Embeddable = int(tval)
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		err = uj.Embeddable.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

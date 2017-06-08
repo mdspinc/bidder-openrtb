@@ -1,4 +1,5 @@
 package openrtb
+
 //go:generate ffjson -force-regenerate $GOFILE
 
 import "encoding/json"
@@ -23,10 +24,10 @@ type Content struct {
 	UserRating         string           `json:"userrating,omitempty"`         // User rating of the content (e.g., number of stars, likes, etc.).
 	QAGMediaRating     int              `json:"qagmediarating,omitempty"`     // Media rating per QAG guidelines.
 	Keywords           string           `json:"keywords,omitempty"`           // Comma separated list of keywords describing the content.
-	LiveStream         int              `json:"livestream,omitempty"`         // 0 = not live, 1 = content is live (e.g., stream, live blog).
-	SourceRelationship int              `json:"sourcerelationship,omitempty"` // 0 = indirect, 1 = direct.
+	LiveStream         NumberOrBool     `json:"livestream,omitempty"`         // 0 = not live, 1 = content is live (e.g., stream, live blog).
+	SourceRelationship NumberOrBool     `json:"sourcerelationship,omitempty"` // 0 = indirect, 1 = direct.
 	Len                int              `json:"len,omitempty"`                // Length of content in seconds; appropriate for video or audio.
 	Language           string           `json:"language,omitempty"`           // Content language using ISO-639-1-alpha-2.
-	Embeddable         int              `json:"embeddable,omitempty"`         // Indicator of whether or not the content is embeddable (e.g., an embeddable video player), where 0 = no, 1 = yes.
+	Embeddable         NumberOrBool     `json:"embeddable,omitempty"`         // Indicator of whether or not the content is embeddable (e.g., an embeddable video player), where 0 = no, 1 = yes.
 	Ext                *json.RawMessage `json:"ext,omitempty"`
 }

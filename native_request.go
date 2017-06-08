@@ -20,7 +20,7 @@ type NativeRequest struct {
 
 type NativeRequestAsset struct {
 	ID       int                 `json:"id,omitempty"`
-	Required int                 `json:"required,omitempty"`
+	Required NumberOrBool        `json:"required,omitempty"`
 	Title    *NativeRequestTitle `json:"title,omitempty"`
 	Image    *NativeRequestImage `json:"img,omitempty"`
 	Video    *NativeRequestVideo `json:"video,omitempty"`

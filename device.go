@@ -8,8 +8,8 @@ import "encoding/json"
 // platform, location, and carrier. This device can refer to a mobile handset, a desktop computer,
 // set top box or other digital device.
 type Device struct {
-	DNT        int              `json:"dnt,omitempty"` // "1": Do not track
-	LMT        int              `json:"lmt,omitempty"` // "1": Limit Ad Tracking
+	DNT        NumberOrBool     `json:"dnt,omitempty"` // "1": Do not track
+	LMT        NumberOrBool     `json:"lmt,omitempty"` // "1": Limit Ad Tracking
 	UA         string           `json:"ua,omitempty"`  // User agent
 	IP         string           `json:"ip,omitempty"`  // IPv4
 	Geo        *Geo             `json:"geo,omitempty"`
@@ -26,7 +26,7 @@ type Device struct {
 	Model      string           `json:"model,omitempty"`    // Device model
 	OS         string           `json:"os,omitempty"`       // Device OS
 	OSVer      string           `json:"osv,omitempty"`      // Device OS version
-	JS         int              `json:"js,omitempty"`       // Javascript status ("0": Disabled, "1": Enabled)
+	JS         NumberOrBool     `json:"js,omitempty"`       // Javascript status ("0": Disabled, "1": Enabled)
 	ConnType   int              `json:"connectiontype,omitempty"`
 	DeviceType int              `json:"devicetype,omitempty"`
 	FlashVer   string           `json:"flashver,omitempty"` // Flash version
@@ -38,5 +38,5 @@ type Device struct {
 	PxRatio    float64          `json:"pxratio,omitempty"`  // The ratio of physical pixels to device independent pixels.
 	HwVer      string           `json:"hwv,omitempty"`      // Hardware version of the device (e.g., "5S" for iPhone 5S).
 	MccMnc     string           `json:"mccmnc,omitempty"`   // Mobile carrier as the concatenated MCC-MNC code
-	Geofetch   int              `json:"geofetch,omitempty"` // Indicates if the geolocation API will be available to JavaScript code running in the banner, where 0 = no, 1 = yes.
+	Geofetch   NumberOrBool     `json:"geofetch,omitempty"` // Indicates if the geolocation API will be available to JavaScript code running in the banner, where 0 = no, 1 = yes.
 }

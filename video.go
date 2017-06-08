@@ -1,4 +1,5 @@
 package openrtb
+
 //go:generate ffjson -force-regenerate $GOFILE
 
 import (
@@ -32,13 +33,14 @@ type Video struct {
 	MaxExtended    int              `json:"maxextended,omitempty"`    // Maximum extended video ad duration
 	MinBitrate     int              `json:"minbitrate,omitempty"`     // Minimum bit rate in Kbps
 	MaxBitrate     int              `json:"maxbitrate,omitempty"`     // Maximum bit rate in Kbps
-	BoxingAllowed  *int             `json:"boxingallowed,omitempty"`  // If exchange publisher has rules preventing letter boxing
+	BoxingAllowed  *NumberOrBool    `json:"boxingallowed,omitempty"`  // If exchange publisher has rules preventing letter boxing
 	PlaybackMethod []int            `json:"playbackmethod,omitempty"` // List of allowed playback methods
 	Delivery       []int            `json:"delivery,omitempty"`       // List of supported delivery methods
 	Pos            int              `json:"pos,omitempty"`            // Ad Position
 	CompanionAd    []Banner         `json:"companionad,omitempty"`
 	Api            []int            `json:"api,omitempty"` // List of supported API frameworks
 	CompanionType  []int            `json:"companiontype,omitempty"`
+	Skip           NumberOrBool     `json:"skip,omitempty"` // Indicates if the player will allow the video to be skipped, where 0 = no, 1 = yes.
 	Ext            *json.RawMessage `json:"ext,omitempty"`
 }
 
@@ -61,7 +63,7 @@ func (v *Video) Validate() error {
 }
 
 // GetBoxingAllowed returns the boxing-allowed indicator
-func (v *Video) GetBoxingAllowed() int {
+func (v *Video) GetBoxingAllowed() NumberOrBool {
 	if v.BoxingAllowed != nil {
 		return *v.BoxingAllowed
 	}

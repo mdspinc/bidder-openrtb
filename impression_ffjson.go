@@ -848,29 +848,25 @@ handle_BidFloorCurrency:
 
 handle_Secure:
 
-	/* handler: uj.Secure type=int kind=int quoted=false*/
+	/* handler: uj.Secure type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
 		if tok == fflib.FFTok_null {
 
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.Secure = int(tval)
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		err = uj.Secure.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

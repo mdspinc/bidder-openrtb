@@ -149,6 +149,11 @@ func (mj *BidRequest) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.FormatBits2(buf, uint64(mj.AllImps), 10, mj.AllImps < 0)
 		buf.WriteByte(',')
 	}
+	if mj.Test != 0 {
+		buf.WriteString(`"test":`)
+		fflib.FormatBits2(buf, uint64(mj.Test), 10, mj.Test < 0)
+		buf.WriteByte(',')
+	}
 	if len(mj.Cur) != 0 {
 		buf.WriteString(`"cur":`)
 		if mj.Cur != nil {
@@ -277,6 +282,8 @@ const (
 
 	ffj_t_BidRequest_AllImps
 
+	ffj_t_BidRequest_Test
+
 	ffj_t_BidRequest_Cur
 
 	ffj_t_BidRequest_Bcat
@@ -311,6 +318,8 @@ var ffj_key_BidRequest_TMax = []byte("tmax")
 var ffj_key_BidRequest_WSeat = []byte("wseat")
 
 var ffj_key_BidRequest_AllImps = []byte("allimps")
+
+var ffj_key_BidRequest_Test = []byte("test")
 
 var ffj_key_BidRequest_Cur = []byte("cur")
 
@@ -488,6 +497,11 @@ mainparse:
 						currentKey = ffj_t_BidRequest_TMax
 						state = fflib.FFParse_want_colon
 						goto mainparse
+
+					} else if bytes.Equal(ffj_key_BidRequest_Test, kn) {
+						currentKey = ffj_t_BidRequest_Test
+						state = fflib.FFParse_want_colon
+						goto mainparse
 					}
 
 				case 'u':
@@ -546,6 +560,12 @@ mainparse:
 
 				if fflib.SimpleLetterEqualFold(ffj_key_BidRequest_Cur, kn) {
 					currentKey = ffj_t_BidRequest_Cur
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffj_key_BidRequest_Test, kn) {
+					currentKey = ffj_t_BidRequest_Test
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -656,6 +676,9 @@ mainparse:
 
 				case ffj_t_BidRequest_AllImps:
 					goto handle_AllImps
+
+				case ffj_t_BidRequest_Test:
+					goto handle_Test
 
 				case ffj_t_BidRequest_Cur:
 					goto handle_Cur
@@ -1031,29 +1054,51 @@ handle_WSeat:
 
 handle_AllImps:
 
-	/* handler: uj.AllImps type=int kind=int quoted=false*/
+	/* handler: uj.AllImps type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
 		if tok == fflib.FFTok_null {
 
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.AllImps = int(tval)
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		err = uj.AllImps.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Test:
+
+	/* handler: uj.Test type=openrtb.NumberOrBool kind=int quoted=false*/
+
+	{
+		if tok == fflib.FFTok_null {
+
+			state = fflib.FFParse_after_value
+			goto mainparse
+		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		err = uj.Test.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

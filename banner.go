@@ -1,4 +1,5 @@
 package openrtb
+
 //go:generate ffjson -force-regenerate $GOFILE
 
 import "encoding/json"
@@ -21,7 +22,7 @@ type Banner struct {
 	BType    []int            `json:"btype,omitempty"`    // Blocked creative types
 	BAttr    []int            `json:"battr,omitempty"`    // Blocked creative attributes
 	Mimes    []string         `json:"mimes,omitempty"`    // Whitelist of content MIME types supported
-	TopFrame int              `json:"topframe,omitempty"` // Default: 0 ("1": Delivered in top frame, "0": Elsewhere)
+	TopFrame NumberOrBool     `json:"topframe,omitempty"` // Default: 0 ("1": Delivered in top frame, "0": Elsewhere)
 	ExpDir   []int            `json:"expdir,omitempty"`   // Specify properties for an expandable ad
 	Api      []int            `json:"api,omitempty"`      // List of supported API frameworks
 	Ext      *json.RawMessage `json:"ext,omitempty"`

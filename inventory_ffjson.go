@@ -49,13 +49,9 @@ func (mj *App) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.WriteJsonString(buf, string(mj.Ver))
 		buf.WriteByte(',')
 	}
-	if mj.Paid != nil {
+	if mj.Paid != 0 {
 		buf.WriteString(`"paid":`)
-		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.Paid)
-		if err != nil {
-			return err
-		}
+		fflib.FormatBits2(buf, uint64(mj.Paid), 10, mj.Paid < 0)
 		buf.WriteByte(',')
 	}
 	if len(mj.ID) != 0 {
@@ -661,19 +657,25 @@ handle_Ver:
 
 handle_Paid:
 
-	/* handler: uj.Paid type=interface {} kind=interface quoted=false*/
+	/* handler: uj.Paid type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		/* Falling back. type=interface {} kind=interface */
+		if tok == fflib.FFTok_null {
+
+			state = fflib.FFParse_after_value
+			goto mainparse
+		}
+
 		tbuf, err := fs.CaptureField(tok)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Paid)
+		err = uj.Paid.UnmarshalJSON(tbuf)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -981,32 +983,31 @@ handle_PageCat:
 
 handle_PrivacyPolicy:
 
-	/* handler: uj.PrivacyPolicy type=int kind=int quoted=false*/
+	/* handler: uj.PrivacyPolicy type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
 		if tok == fflib.FFTok_null {
 
 			uj.PrivacyPolicy = nil
 
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			ttypval := int(tval)
-			uj.PrivacyPolicy = &ttypval
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		if uj.PrivacyPolicy == nil {
+			uj.PrivacyPolicy = new(NumberOrBool)
+		}
+
+		err = uj.PrivacyPolicy.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -1911,32 +1912,31 @@ handle_PageCat:
 
 handle_PrivacyPolicy:
 
-	/* handler: uj.PrivacyPolicy type=int kind=int quoted=false*/
+	/* handler: uj.PrivacyPolicy type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
 		if tok == fflib.FFTok_null {
 
 			uj.PrivacyPolicy = nil
 
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			ttypval := int(tval)
-			uj.PrivacyPolicy = &ttypval
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		if uj.PrivacyPolicy == nil {
+			uj.PrivacyPolicy = new(NumberOrBool)
+		}
+
+		err = uj.PrivacyPolicy.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -2717,29 +2717,25 @@ handle_Search:
 
 handle_Mobile:
 
-	/* handler: uj.Mobile type=int kind=int quoted=false*/
+	/* handler: uj.Mobile type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
 		if tok == fflib.FFTok_null {
 
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			uj.Mobile = int(tval)
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		err = uj.Mobile.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -3047,32 +3043,31 @@ handle_PageCat:
 
 handle_PrivacyPolicy:
 
-	/* handler: uj.PrivacyPolicy type=int kind=int quoted=false*/
+	/* handler: uj.PrivacyPolicy type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
 		if tok == fflib.FFTok_null {
 
 			uj.PrivacyPolicy = nil
 
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			ttypval := int(tval)
-			uj.PrivacyPolicy = &ttypval
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		if uj.PrivacyPolicy == nil {
+			uj.PrivacyPolicy = new(NumberOrBool)
+		}
+
+		err = uj.PrivacyPolicy.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

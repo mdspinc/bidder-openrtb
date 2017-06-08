@@ -19,7 +19,7 @@ type NativeAdMarkupInner struct {
 
 type NativeAsset struct {
 	ID       int              `json:"id"`
-	Required int              `json:"required,omitempty"`
+	Required NumberOrBool     `json:"required,omitempty"`
 	Title    *NativeTitle     `json:"title,omitempty"`
 	Image    *NativeImage     `json:"img,omitempty"`
 	Video    *NativeVideo     `json:"video,omitempty"`

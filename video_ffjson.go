@@ -237,6 +237,11 @@ func (mj *jsonVideo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		}
 		buf.WriteByte(',')
 	}
+	if mj.Skip != 0 {
+		buf.WriteString(`"skip":`)
+		fflib.FormatBits2(buf, uint64(mj.Skip), 10, mj.Skip < 0)
+		buf.WriteByte(',')
+	}
 	if mj.Ext != nil {
 		if true {
 			buf.WriteString(`"ext":`)
@@ -304,6 +309,8 @@ const (
 
 	ffj_t_jsonVideo_CompanionType
 
+	ffj_t_jsonVideo_Skip
+
 	ffj_t_jsonVideo_Ext
 )
 
@@ -348,6 +355,8 @@ var ffj_key_jsonVideo_CompanionAd = []byte("companionad")
 var ffj_key_jsonVideo_Api = []byte("api")
 
 var ffj_key_jsonVideo_CompanionType = []byte("companiontype")
+
+var ffj_key_jsonVideo_Skip = []byte("skip")
 
 var ffj_key_jsonVideo_Ext = []byte("ext")
 
@@ -543,6 +552,11 @@ mainparse:
 						currentKey = ffj_t_jsonVideo_Sequence
 						state = fflib.FFParse_want_colon
 						goto mainparse
+
+					} else if bytes.Equal(ffj_key_jsonVideo_Skip, kn) {
+						currentKey = ffj_t_jsonVideo_Skip
+						state = fflib.FFParse_want_colon
+						goto mainparse
 					}
 
 				case 'w':
@@ -557,6 +571,12 @@ mainparse:
 
 				if fflib.SimpleLetterEqualFold(ffj_key_jsonVideo_Ext, kn) {
 					currentKey = ffj_t_jsonVideo_Ext
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffj_key_jsonVideo_Skip, kn) {
+					currentKey = ffj_t_jsonVideo_Skip
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -766,6 +786,9 @@ mainparse:
 
 				case ffj_t_jsonVideo_CompanionType:
 					goto handle_CompanionType
+
+				case ffj_t_jsonVideo_Skip:
+					goto handle_Skip
 
 				case ffj_t_jsonVideo_Ext:
 					goto handle_Ext
@@ -1346,32 +1369,31 @@ handle_MaxBitrate:
 
 handle_BoxingAllowed:
 
-	/* handler: uj.BoxingAllowed type=int kind=int quoted=false*/
+	/* handler: uj.BoxingAllowed type=openrtb.NumberOrBool kind=int quoted=false*/
 
 	{
-		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
-			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
-		}
-	}
-
-	{
-
 		if tok == fflib.FFTok_null {
 
 			uj.BoxingAllowed = nil
 
-		} else {
-
-			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
-
-			if err != nil {
-				return fs.WrapErr(err)
-			}
-
-			ttypval := int(tval)
-			uj.BoxingAllowed = &ttypval
-
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		if uj.BoxingAllowed == nil {
+			uj.BoxingAllowed = new(NumberOrBool)
+		}
+
+		err = uj.BoxingAllowed.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -1783,6 +1805,32 @@ handle_CompanionType:
 				wantVal = false
 			}
 		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Skip:
+
+	/* handler: uj.Skip type=openrtb.NumberOrBool kind=int quoted=false*/
+
+	{
+		if tok == fflib.FFTok_null {
+
+			state = fflib.FFParse_after_value
+			goto mainparse
+		}
+
+		tbuf, err := fs.CaptureField(tok)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+
+		err = uj.Skip.UnmarshalJSON(tbuf)
+		if err != nil {
+			return fs.WrapErr(err)
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

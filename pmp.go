@@ -1,11 +1,12 @@
 package openrtb
+
 //go:generate ffjson -force-regenerate $GOFILE
 
 import "encoding/json"
 
 // Private Marketplace Object
 type Pmp struct {
-	Private int              `json:"private_auction,omitempty"`
+	Private NumberOrBool     `json:"private_auction,omitempty"`
 	Deals   []Deal           `json:"deals,omitempty"`
 	Ext     *json.RawMessage `json:"ext,omitempty"`
 }
