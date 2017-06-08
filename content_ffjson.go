@@ -61,11 +61,15 @@ func (mj *Content) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Producer != nil {
 		if true {
-			/* Struct fall back. type=openrtb.Producer kind=struct */
 			buf.WriteString(`"producer":`)
-			err = buf.Encode(mj.Producer)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.Producer.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
@@ -739,16 +743,23 @@ handle_Producer:
 	/* handler: uj.Producer type=openrtb.Producer kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.Producer kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.Producer = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Producer)
-		if err != nil {
-			return fs.WrapErr(err)
+		if uj.Producer == nil {
+			uj.Producer = new(Producer)
 		}
+
+		err = uj.Producer.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

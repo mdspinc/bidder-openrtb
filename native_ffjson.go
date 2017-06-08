@@ -36,13 +36,9 @@ func (mj *jsonNative) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	buf.WriteString(`{ "request":`)
 	fflib.WriteJsonString(buf, string(mj.Request))
 	buf.WriteByte(',')
-	if mj.Ver != nil {
+	if len(mj.Ver) != 0 {
 		buf.WriteString(`"ver":`)
-		/* Interface types must use runtime reflection. type=interface {} kind=interface */
-		err = buf.Encode(mj.Ver)
-		if err != nil {
-			return err
-		}
+		fflib.WriteJsonString(buf, string(mj.Ver))
 		buf.WriteByte(',')
 	}
 	if len(mj.API) != 0 {
@@ -364,19 +360,25 @@ handle_Request:
 
 handle_Ver:
 
-	/* handler: uj.Ver type=interface {} kind=interface quoted=false*/
+	/* handler: uj.Ver type=openrtb.StringOrNumber kind=string quoted=false*/
 
 	{
-		/* Falling back. type=interface {} kind=interface */
+		if tok == fflib.FFTok_null {
+
+			state = fflib.FFParse_after_value
+			goto mainparse
+		}
+
 		tbuf, err := fs.CaptureField(tok)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Ver)
+		err = uj.Ver.UnmarshalJSON(tbuf)
 		if err != nil {
 			return fs.WrapErr(err)
 		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

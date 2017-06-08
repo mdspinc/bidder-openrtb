@@ -9,7 +9,7 @@ type NativeRequestOuter struct {
 }
 
 type NativeRequest struct {
-	Ver      interface{}           `json:"ver,omitempty"`
+	Ver      StringOrNumber        `json:"ver,omitempty"`
 	Layout   int                   `json:"layout,omitempty"`
 	Adunit   int                   `json:"adunit,omitempty"`
 	Plcmtcnt int                   `json:"plcmtcnt,omitempty"`

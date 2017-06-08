@@ -13,7 +13,7 @@ import "encoding/json"
 // respectively. However, any given bid for the impression must conform to one of the offered types.
 type Native struct {
 	Request string           `json:"request"`         // Request payload complying with the Native Ad Specification.
-	Ver     interface{}      `json:"ver,omitempty"`   // Version of the Native Ad Specification to which request complies; highly recommended for efficient parsing.
+	Ver     StringOrNumber   `json:"ver,omitempty"`   // Version of the Native Ad Specification to which request complies; highly recommended for efficient parsing.
 	API     []int            `json:"api,omitempty"`   // List of supported API frameworks for this impression.
 	BAttr   []int            `json:"battr,omitempty"` // Blocked creative attributes
 	Ext     *json.RawMessage `json:"ext,omitempty"`

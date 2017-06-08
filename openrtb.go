@@ -205,7 +205,7 @@ type Geo struct {
 	City          string           `json:"city,omitempty"`
 	Zip           string           `json:"zip,omitempty"`
 	Type          int              `json:"type,omitempty"`      // Indicate the source of the geo data
-	UTCOffset     int              `json:"utcoffset,omitempty"` // Local time as the number +/- of minutes from UTC
+	UTCOffset     NumberOrString   `json:"utcoffset,omitempty"` // Local time as the number +/- of minutes from UTC
 	Ext           *json.RawMessage `json:"ext,omitempty"`
 }
 

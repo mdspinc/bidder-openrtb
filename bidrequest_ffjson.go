@@ -44,10 +44,14 @@ func (mj *BidRequest) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 				if i != 0 {
 					buf.WriteString(`,`)
 				}
-				/* Struct fall back. type=openrtb.Impression kind=struct */
-				err = buf.Encode(&v)
-				if err != nil {
-					return err
+
+				{
+
+					err = v.MarshalJSONBuf(buf)
+					if err != nil {
+						return err
+					}
+
 				}
 			}
 			buf.WriteString(`]`)
@@ -58,44 +62,60 @@ func (mj *BidRequest) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Site != nil {
 		if true {
-			/* Struct fall back. type=openrtb.Site kind=struct */
 			buf.WriteString(`"site":`)
-			err = buf.Encode(mj.Site)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.Site.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
 	}
 	if mj.App != nil {
 		if true {
-			/* Struct fall back. type=openrtb.App kind=struct */
 			buf.WriteString(`"app":`)
-			err = buf.Encode(mj.App)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.App.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
 	}
 	if mj.Device != nil {
 		if true {
-			/* Struct fall back. type=openrtb.Device kind=struct */
 			buf.WriteString(`"device":`)
-			err = buf.Encode(mj.Device)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.Device.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
 	}
 	if mj.User != nil {
 		if true {
-			/* Struct fall back. type=openrtb.User kind=struct */
 			buf.WriteString(`"user":`)
-			err = buf.Encode(mj.User)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.User.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
@@ -184,11 +204,15 @@ func (mj *BidRequest) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Regs != nil {
 		if true {
-			/* Struct fall back. type=openrtb.Regulations kind=struct */
 			buf.WriteString(`"regs":`)
-			err = buf.Encode(mj.Regs)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.Regs.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
@@ -211,11 +235,15 @@ func (mj *BidRequest) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if mj.Pmp != nil {
 		if true {
-			/* Struct fall back. type=openrtb.Pmp kind=struct */
 			buf.WriteString(`"pmp":`)
-			err = buf.Encode(mj.Pmp)
-			if err != nil {
-				return err
+
+			{
+
+				err = mj.Pmp.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
 			buf.WriteByte(',')
 		}
@@ -736,16 +764,17 @@ handle_Imp:
 				/* handler: tmp_uj__Imp type=openrtb.Impression kind=struct quoted=false*/
 
 				{
-					/* Falling back. type=openrtb.Impression kind=struct */
-					tbuf, err := fs.CaptureField(tok)
-					if err != nil {
-						return fs.WrapErr(err)
+					if tok == fflib.FFTok_null {
+
+						state = fflib.FFParse_after_value
+						goto mainparse
 					}
 
-					err = json.Unmarshal(tbuf, &tmp_uj__Imp)
+					err = tmp_uj__Imp.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 					if err != nil {
-						return fs.WrapErr(err)
+						return err
 					}
+					state = fflib.FFParse_after_value
 				}
 
 				uj.Imp = append(uj.Imp, tmp_uj__Imp)
@@ -763,16 +792,23 @@ handle_Site:
 	/* handler: uj.Site type=openrtb.Site kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.Site kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.Site = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Site)
-		if err != nil {
-			return fs.WrapErr(err)
+		if uj.Site == nil {
+			uj.Site = new(Site)
 		}
+
+		err = uj.Site.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -783,16 +819,23 @@ handle_App:
 	/* handler: uj.App type=openrtb.App kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.App kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.App = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.App)
-		if err != nil {
-			return fs.WrapErr(err)
+		if uj.App == nil {
+			uj.App = new(App)
 		}
+
+		err = uj.App.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -803,16 +846,23 @@ handle_Device:
 	/* handler: uj.Device type=openrtb.Device kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.Device kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.Device = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Device)
-		if err != nil {
-			return fs.WrapErr(err)
+		if uj.Device == nil {
+			uj.Device = new(Device)
 		}
+
+		err = uj.Device.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -823,16 +873,23 @@ handle_User:
 	/* handler: uj.User type=openrtb.User kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.User kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.User = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.User)
-		if err != nil {
-			return fs.WrapErr(err)
+		if uj.User == nil {
+			uj.User = new(User)
 		}
+
+		err = uj.User.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -1259,16 +1316,23 @@ handle_Regs:
 	/* handler: uj.Regs type=openrtb.Regulations kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.Regulations kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.Regs = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Regs)
-		if err != nil {
-			return fs.WrapErr(err)
+		if uj.Regs == nil {
+			uj.Regs = new(Regulations)
 		}
+
+		err = uj.Regs.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
@@ -1311,16 +1375,23 @@ handle_Pmp:
 	/* handler: uj.Pmp type=openrtb.Pmp kind=struct quoted=false*/
 
 	{
-		/* Falling back. type=openrtb.Pmp kind=struct */
-		tbuf, err := fs.CaptureField(tok)
-		if err != nil {
-			return fs.WrapErr(err)
+		if tok == fflib.FFTok_null {
+
+			uj.Pmp = nil
+
+			state = fflib.FFParse_after_value
+			goto mainparse
 		}
 
-		err = json.Unmarshal(tbuf, &uj.Pmp)
-		if err != nil {
-			return fs.WrapErr(err)
+		if uj.Pmp == nil {
+			uj.Pmp = new(Pmp)
 		}
+
+		err = uj.Pmp.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+		if err != nil {
+			return err
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value
