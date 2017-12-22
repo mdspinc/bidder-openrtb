@@ -1,3 +1,5 @@
+.PHONY: default all test regenerate clean_ffjson full_regenerate
+
 default: test
 
 deps:
@@ -5,3 +7,12 @@ deps:
 
 test: deps
 	go test ./...
+
+regenerate:
+	go generate `go list ./... | grep -v '/vendor/'`
+
+clean_ffjson:
+	find -name '*ffjson*' -not -path './vendor/*' -delete
+
+full_regenerate: clean_ffjson regenerate
+	go generate `go list ./... | grep -v '/vendor/'`
