@@ -120,7 +120,7 @@ func (j *App) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.PrivacyPolicy != nil {
 		if true {
-			buf.WriteString(`"pivacypolicy":`)
+			buf.WriteString(`"privacypolicy":`)
 			fflib.FormatBits2(buf, uint64(*j.PrivacyPolicy), 10, *j.PrivacyPolicy < 0)
 			buf.WriteByte(',')
 		}
@@ -236,7 +236,7 @@ var ffjKeyAppSectionCat = []byte("sectioncat")
 
 var ffjKeyAppPageCat = []byte("pagecat")
 
-var ffjKeyAppPrivacyPolicy = []byte("pivacypolicy")
+var ffjKeyAppPrivacyPolicy = []byte("privacypolicy")
 
 var ffjKeyAppPublisher = []byte("publisher")
 
@@ -1231,7 +1231,7 @@ func (j *Inventory) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.PrivacyPolicy != nil {
 		if true {
-			buf.WriteString(`"pivacypolicy":`)
+			buf.WriteString(`"privacypolicy":`)
 			fflib.FormatBits2(buf, uint64(*j.PrivacyPolicy), 10, *j.PrivacyPolicy < 0)
 			buf.WriteByte(',')
 		}
@@ -1331,7 +1331,7 @@ var ffjKeyInventorySectionCat = []byte("sectioncat")
 
 var ffjKeyInventoryPageCat = []byte("pagecat")
 
-var ffjKeyInventoryPrivacyPolicy = []byte("pivacypolicy")
+var ffjKeyInventoryPrivacyPolicy = []byte("privacypolicy")
 
 var ffjKeyInventoryPublisher = []byte("publisher")
 
@@ -2181,7 +2181,7 @@ func (j *Site) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	}
 	if j.PrivacyPolicy != nil {
 		if true {
-			buf.WriteString(`"pivacypolicy":`)
+			buf.WriteString(`"privacypolicy":`)
 			fflib.FormatBits2(buf, uint64(*j.PrivacyPolicy), 10, *j.PrivacyPolicy < 0)
 			buf.WriteByte(',')
 		}
@@ -2297,7 +2297,7 @@ var ffjKeySiteSectionCat = []byte("sectioncat")
 
 var ffjKeySitePageCat = []byte("pagecat")
 
-var ffjKeySitePrivacyPolicy = []byte("pivacypolicy")
+var ffjKeySitePrivacyPolicy = []byte("privacypolicy")
 
 var ffjKeySitePublisher = []byte("publisher")
 
