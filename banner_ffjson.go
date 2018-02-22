@@ -35,20 +35,29 @@ func (j *Banner) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ `)
-	if j.Format != nil {
-		if true {
-			buf.WriteString(`"format":`)
-
-			{
-
-				err = j.Format.MarshalJSONBuf(buf)
-				if err != nil {
-					return err
+	if len(j.Format) != 0 {
+		buf.WriteString(`"format":`)
+		if j.Format != nil {
+			buf.WriteString(`[`)
+			for i, v := range j.Format {
+				if i != 0 {
+					buf.WriteString(`,`)
 				}
 
+				{
+
+					err = v.MarshalJSONBuf(buf)
+					if err != nil {
+						return err
+					}
+
+				}
 			}
-			buf.WriteByte(',')
+			buf.WriteString(`]`)
+		} else {
+			buf.WriteString(`null`)
 		}
+		buf.WriteByte(',')
 	}
 	if j.W != 0 {
 		buf.WriteString(`"w":`)
@@ -641,25 +650,67 @@ mainparse:
 
 handle_Format:
 
-	/* handler: j.Format type=openrtb.Format kind=struct quoted=false*/
+	/* handler: j.Format type=[]openrtb.Format kind=slice quoted=false*/
 
 	{
-		if tok == fflib.FFTok_null {
 
-			j.Format = nil
-
-		} else {
-
-			if j.Format == nil {
-				j.Format = new(Format)
-			}
-
-			err = j.Format.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
-			if err != nil {
-				return err
+		{
+			if tok != fflib.FFTok_left_brace && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for ", tok))
 			}
 		}
-		state = fflib.FFParse_after_value
+
+		if tok == fflib.FFTok_null {
+			j.Format = nil
+		} else {
+
+			j.Format = []Format{}
+
+			wantVal := true
+
+			for {
+
+				var tmpJFormat Format
+
+				tok = fs.Scan()
+				if tok == fflib.FFTok_error {
+					goto tokerror
+				}
+				if tok == fflib.FFTok_right_brace {
+					break
+				}
+
+				if tok == fflib.FFTok_comma {
+					if wantVal == true {
+						// TODO(pquerna): this isn't an ideal error message, this handles
+						// things like [,,,] as an array value.
+						return fs.WrapErr(fmt.Errorf("wanted value token, but got token: %v", tok))
+					}
+					continue
+				} else {
+					wantVal = true
+				}
+
+				/* handler: tmpJFormat type=openrtb.Format kind=struct quoted=false*/
+
+				{
+					if tok == fflib.FFTok_null {
+
+					} else {
+
+						err = tmpJFormat.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
+						if err != nil {
+							return err
+						}
+					}
+					state = fflib.FFParse_after_value
+				}
+
+				j.Format = append(j.Format, tmpJFormat)
+
+				wantVal = false
+			}
+		}
 	}
 
 	state = fflib.FFParse_after_value

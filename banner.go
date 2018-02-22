@@ -11,7 +11,7 @@ import "encoding/json"
 // VAST response to dictate placement of the companion creatives when multiple companion ad
 // opportunities of the same size are available on a page.
 type Banner struct {
-	Format   *Format          `json:"format,omitempty"`
+	Format   []Format         `json:"format,omitempty"`
 	W        int              `json:"w,omitempty"`        // Width
 	H        int              `json:"h,omitempty"`        // Height
 	WMax     int              `json:"wmax,omitempty"`     // Width maximum
