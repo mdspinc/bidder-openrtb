@@ -60,6 +60,26 @@ func (j *Content) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.WriteJsonString(buf, string(j.Season))
 		buf.WriteByte(',')
 	}
+	if len(j.Artist) != 0 {
+		buf.WriteString(`"artist":`)
+		fflib.WriteJsonString(buf, string(j.Artist))
+		buf.WriteByte(',')
+	}
+	if len(j.Genre) != 0 {
+		buf.WriteString(`"genre":`)
+		fflib.WriteJsonString(buf, string(j.Genre))
+		buf.WriteByte(',')
+	}
+	if len(j.Album) != 0 {
+		buf.WriteString(`"album":`)
+		fflib.WriteJsonString(buf, string(j.Album))
+		buf.WriteByte(',')
+	}
+	if len(j.ISRC) != 0 {
+		buf.WriteString(`"isrc":`)
+		fflib.WriteJsonString(buf, string(j.ISRC))
+		buf.WriteByte(',')
+	}
 	if j.Producer != nil {
 		if true {
 			buf.WriteString(`"producer":`)
@@ -74,6 +94,11 @@ func (j *Content) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			}
 			buf.WriteByte(',')
 		}
+	}
+	if j.Prodq != 0 {
+		buf.WriteString(`"prodq":`)
+		fflib.FormatBits2(buf, uint64(j.Prodq), 10, j.Prodq < 0)
+		buf.WriteByte(',')
 	}
 	if j.VideoQuality != 0 {
 		buf.WriteString(`"videoquality":`)
@@ -165,7 +190,17 @@ const (
 
 	ffjtContentSeason
 
+	ffjtContentArtist
+
+	ffjtContentGenre
+
+	ffjtContentAlbum
+
+	ffjtContentISRC
+
 	ffjtContentProducer
+
+	ffjtContentProdq
 
 	ffjtContentVideoQuality
 
@@ -202,7 +237,17 @@ var ffjKeyContentSeries = []byte("series")
 
 var ffjKeyContentSeason = []byte("season")
 
+var ffjKeyContentArtist = []byte("artist")
+
+var ffjKeyContentGenre = []byte("genre")
+
+var ffjKeyContentAlbum = []byte("album")
+
+var ffjKeyContentISRC = []byte("isrc")
+
 var ffjKeyContentProducer = []byte("producer")
+
+var ffjKeyContentProdq = []byte("prodq")
 
 var ffjKeyContentVideoQuality = []byte("videoquality")
 
@@ -289,6 +334,19 @@ mainparse:
 			} else {
 				switch kn[0] {
 
+				case 'a':
+
+					if bytes.Equal(ffjKeyContentArtist, kn) {
+						currentKey = ffjtContentArtist
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffjKeyContentAlbum, kn) {
+						currentKey = ffjtContentAlbum
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				case 'c':
 
 					if bytes.Equal(ffjKeyContentContext, kn) {
@@ -320,10 +378,23 @@ mainparse:
 						goto mainparse
 					}
 
+				case 'g':
+
+					if bytes.Equal(ffjKeyContentGenre, kn) {
+						currentKey = ffjtContentGenre
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				case 'i':
 
 					if bytes.Equal(ffjKeyContentID, kn) {
 						currentKey = ffjtContentID
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffjKeyContentISRC, kn) {
+						currentKey = ffjtContentISRC
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -358,6 +429,11 @@ mainparse:
 
 					if bytes.Equal(ffjKeyContentProducer, kn) {
 						currentKey = ffjtContentProducer
+						state = fflib.FFParse_want_colon
+						goto mainparse
+
+					} else if bytes.Equal(ffjKeyContentProdq, kn) {
+						currentKey = ffjtContentProdq
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -486,8 +562,38 @@ mainparse:
 					goto mainparse
 				}
 
+				if fflib.SimpleLetterEqualFold(ffjKeyContentProdq, kn) {
+					currentKey = ffjtContentProdq
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
 				if fflib.SimpleLetterEqualFold(ffjKeyContentProducer, kn) {
 					currentKey = ffjtContentProducer
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffjKeyContentISRC, kn) {
+					currentKey = ffjtContentISRC
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffjKeyContentAlbum, kn) {
+					currentKey = ffjtContentAlbum
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffjKeyContentGenre, kn) {
+					currentKey = ffjtContentGenre
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffjKeyContentArtist, kn) {
+					currentKey = ffjtContentArtist
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -554,8 +660,23 @@ mainparse:
 				case ffjtContentSeason:
 					goto handle_Season
 
+				case ffjtContentArtist:
+					goto handle_Artist
+
+				case ffjtContentGenre:
+					goto handle_Genre
+
+				case ffjtContentAlbum:
+					goto handle_Album
+
+				case ffjtContentISRC:
+					goto handle_ISRC
+
 				case ffjtContentProducer:
 					goto handle_Producer
+
+				case ffjtContentProdq:
+					goto handle_Prodq
 
 				case ffjtContentVideoQuality:
 					goto handle_VideoQuality
@@ -741,6 +862,110 @@ handle_Season:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
+handle_Artist:
+
+	/* handler: j.Artist type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			j.Artist = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Genre:
+
+	/* handler: j.Genre type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			j.Genre = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Album:
+
+	/* handler: j.Album type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			j.Album = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_ISRC:
+
+	/* handler: j.ISRC type=string kind=string quoted=false*/
+
+	{
+
+		{
+			if tok != fflib.FFTok_string && tok != fflib.FFTok_null {
+				return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for string", tok))
+			}
+		}
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			outBuf := fs.Output.Bytes()
+
+			j.ISRC = string(string(outBuf))
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
 handle_Producer:
 
 	/* handler: j.Producer type=openrtb.Producer kind=struct quoted=false*/
@@ -762,6 +987,36 @@ handle_Producer:
 			}
 		}
 		state = fflib.FFParse_after_value
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Prodq:
+
+	/* handler: j.Prodq type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			j.Prodq = int(tval)
+
+		}
 	}
 
 	state = fflib.FFParse_after_value

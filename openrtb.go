@@ -200,7 +200,7 @@ type Geo struct {
 	IPService     int              `json:"ipservice,omitempty"`     // Service or provider used to determine geolocation from IP
 	Country       string           `json:"country,omitempty"`       // Country using ISO 3166-1 Alpha 3
 	Region        string           `json:"region,omitempty"`        // Region using ISO 3166-2
-	RegionFIPS104 string           `json:"regionFIPS104,omitempty"` // Region of a country using FIPS 10-4
+	RegionFIPS104 string           `json:"regionfips104,omitempty"` // Region of a country using FIPS 10-4
 	Metro         string           `json:"metro,omitempty"`
 	City          string           `json:"city,omitempty"`
 	Zip           string           `json:"zip,omitempty"`

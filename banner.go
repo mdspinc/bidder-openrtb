@@ -11,6 +11,7 @@ import "encoding/json"
 // VAST response to dictate placement of the companion creatives when multiple companion ad
 // opportunities of the same size are available on a page.
 type Banner struct {
+	Format   Format           `json:"format,omitempty"`
 	W        int              `json:"w,omitempty"`        // Width
 	H        int              `json:"h,omitempty"`        // Height
 	WMax     int              `json:"wmax,omitempty"`     // Width maximum
@@ -25,5 +26,15 @@ type Banner struct {
 	TopFrame NumberOrBool     `json:"topframe,omitempty"` // Default: 0 ("1": Delivered in top frame, "0": Elsewhere)
 	ExpDir   []int            `json:"expdir,omitempty"`   // Specify properties for an expandable ad
 	Api      []int            `json:"api,omitempty"`      // List of supported API frameworks
+	Vcm      int              `json:"vcm,omitempty"`      // 0: concurrent, 1: end-card
 	Ext      *json.RawMessage `json:"ext,omitempty"`
+}
+
+type Format struct {
+	W      int              `json:"w,omitempty"`      // Width in DIPS
+	H      int              `json:"h,omitempty"`      // Height in DIPS
+	Wratio int              `json:"wratio,omitempty"` // Relative width when expressing size as a ratio.
+	HRatio int              `json:"hratio,omitempty"` // Relative height when expressing size as a ratio.
+	WMin   int              `json:"wmin,omitempty"`   // The minimum width in device independent pixels (DIPS) at which the ad will be displayed the size is expressed as a ratio.
+	Ext    *json.RawMessage `json:"ext,omitempty"`
 }

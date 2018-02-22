@@ -503,7 +503,7 @@ func (j *Geo) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		buf.WriteByte(',')
 	}
 	if len(j.RegionFIPS104) != 0 {
-		buf.WriteString(`"regionFIPS104":`)
+		buf.WriteString(`"regionfips104":`)
 		fflib.WriteJsonString(buf, string(j.RegionFIPS104))
 		buf.WriteByte(',')
 	}
@@ -600,7 +600,7 @@ var ffjKeyGeoCountry = []byte("country")
 
 var ffjKeyGeoRegion = []byte("region")
 
-var ffjKeyGeoRegionFIPS104 = []byte("regionFIPS104")
+var ffjKeyGeoRegionFIPS104 = []byte("regionfips104")
 
 var ffjKeyGeoMetro = []byte("metro")
 

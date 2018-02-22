@@ -84,6 +84,22 @@ func (j *Impression) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 			buf.WriteByte(',')
 		}
 	}
+	if j.Audio != nil {
+		if true {
+			buf.WriteString(`"audio":`)
+
+			{
+
+				obj, err = j.Audio.MarshalJSON()
+				if err != nil {
+					return err
+				}
+				buf.Write(obj)
+
+			}
+			buf.WriteByte(',')
+		}
+	}
 	if len(j.DisplayManager) != 0 {
 		buf.WriteString(`"displaymanager":`)
 		fflib.WriteJsonString(buf, string(j.DisplayManager))
@@ -112,6 +128,11 @@ func (j *Impression) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	if len(j.BidFloorCurrency) != 0 {
 		buf.WriteString(`"bidfloorcur":`)
 		fflib.WriteJsonString(buf, string(j.BidFloorCurrency))
+		buf.WriteByte(',')
+	}
+	if j.ClickBrowser != 0 {
+		buf.WriteString(`"clickbrowser":`)
+		fflib.FormatBits2(buf, uint64(j.ClickBrowser), 10, j.ClickBrowser < 0)
 		buf.WriteByte(',')
 	}
 	if j.Secure != 0 {
@@ -155,6 +176,22 @@ func (j *Impression) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.FormatBits2(buf, uint64(j.Exp), 10, j.Exp < 0)
 		buf.WriteByte(',')
 	}
+	if j.Metric != nil {
+		if true {
+			buf.WriteString(`"metric":`)
+
+			{
+
+				obj, err = j.Metric.MarshalJSON()
+				if err != nil {
+					return err
+				}
+				buf.Write(obj)
+
+			}
+			buf.WriteByte(',')
+		}
+	}
 	if j.Ext != nil {
 		if true {
 			buf.WriteString(`"ext":`)
@@ -188,6 +225,8 @@ const (
 
 	ffjtImpressionNative
 
+	ffjtImpressionAudio
+
 	ffjtImpressionDisplayManager
 
 	ffjtImpressionDisplayManagerVer
@@ -200,6 +239,8 @@ const (
 
 	ffjtImpressionBidFloorCurrency
 
+	ffjtImpressionClickBrowser
+
 	ffjtImpressionSecure
 
 	ffjtImpressionIFrameBuster
@@ -207,6 +248,8 @@ const (
 	ffjtImpressionPmp
 
 	ffjtImpressionExp
+
+	ffjtImpressionMetric
 
 	ffjtImpressionExt
 )
@@ -218,6 +261,8 @@ var ffjKeyImpressionBanner = []byte("banner")
 var ffjKeyImpressionVideo = []byte("video")
 
 var ffjKeyImpressionNative = []byte("native")
+
+var ffjKeyImpressionAudio = []byte("audio")
 
 var ffjKeyImpressionDisplayManager = []byte("displaymanager")
 
@@ -231,6 +276,8 @@ var ffjKeyImpressionBidFloor = []byte("bidfloor")
 
 var ffjKeyImpressionBidFloorCurrency = []byte("bidfloorcur")
 
+var ffjKeyImpressionClickBrowser = []byte("clickbrowser")
+
 var ffjKeyImpressionSecure = []byte("secure")
 
 var ffjKeyImpressionIFrameBuster = []byte("iframebuster")
@@ -238,6 +285,8 @@ var ffjKeyImpressionIFrameBuster = []byte("iframebuster")
 var ffjKeyImpressionPmp = []byte("pmp")
 
 var ffjKeyImpressionExp = []byte("exp")
+
+var ffjKeyImpressionMetric = []byte("metric")
 
 var ffjKeyImpressionExt = []byte("ext")
 
@@ -302,6 +351,14 @@ mainparse:
 			} else {
 				switch kn[0] {
 
+				case 'a':
+
+					if bytes.Equal(ffjKeyImpressionAudio, kn) {
+						currentKey = ffjtImpressionAudio
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
 				case 'b':
 
 					if bytes.Equal(ffjKeyImpressionBanner, kn) {
@@ -316,6 +373,14 @@ mainparse:
 
 					} else if bytes.Equal(ffjKeyImpressionBidFloorCurrency, kn) {
 						currentKey = ffjtImpressionBidFloorCurrency
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 'c':
+
+					if bytes.Equal(ffjKeyImpressionClickBrowser, kn) {
+						currentKey = ffjtImpressionClickBrowser
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -360,6 +425,14 @@ mainparse:
 
 					} else if bytes.Equal(ffjKeyImpressionIFrameBuster, kn) {
 						currentKey = ffjtImpressionIFrameBuster
+						state = fflib.FFParse_want_colon
+						goto mainparse
+					}
+
+				case 'm':
+
+					if bytes.Equal(ffjKeyImpressionMetric, kn) {
+						currentKey = ffjtImpressionMetric
 						state = fflib.FFParse_want_colon
 						goto mainparse
 					}
@@ -412,6 +485,12 @@ mainparse:
 					goto mainparse
 				}
 
+				if fflib.SimpleLetterEqualFold(ffjKeyImpressionMetric, kn) {
+					currentKey = ffjtImpressionMetric
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
 				if fflib.SimpleLetterEqualFold(ffjKeyImpressionExp, kn) {
 					currentKey = ffjtImpressionExp
 					state = fflib.FFParse_want_colon
@@ -432,6 +511,12 @@ mainparse:
 
 				if fflib.EqualFoldRight(ffjKeyImpressionSecure, kn) {
 					currentKey = ffjtImpressionSecure
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.EqualFoldRight(ffjKeyImpressionClickBrowser, kn) {
+					currentKey = ffjtImpressionClickBrowser
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -468,6 +553,12 @@ mainparse:
 
 				if fflib.EqualFoldRight(ffjKeyImpressionDisplayManager, kn) {
 					currentKey = ffjtImpressionDisplayManager
+					state = fflib.FFParse_want_colon
+					goto mainparse
+				}
+
+				if fflib.SimpleLetterEqualFold(ffjKeyImpressionAudio, kn) {
+					currentKey = ffjtImpressionAudio
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -525,6 +616,9 @@ mainparse:
 				case ffjtImpressionNative:
 					goto handle_Native
 
+				case ffjtImpressionAudio:
+					goto handle_Audio
+
 				case ffjtImpressionDisplayManager:
 					goto handle_DisplayManager
 
@@ -543,6 +637,9 @@ mainparse:
 				case ffjtImpressionBidFloorCurrency:
 					goto handle_BidFloorCurrency
 
+				case ffjtImpressionClickBrowser:
+					goto handle_ClickBrowser
+
 				case ffjtImpressionSecure:
 					goto handle_Secure
 
@@ -554,6 +651,9 @@ mainparse:
 
 				case ffjtImpressionExp:
 					goto handle_Exp
+
+				case ffjtImpressionMetric:
+					goto handle_Metric
 
 				case ffjtImpressionExt:
 					goto handle_Ext
@@ -676,6 +776,37 @@ handle_Native:
 			}
 
 			err = j.Native.UnmarshalJSON(tbuf)
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+		}
+		state = fflib.FFParse_after_value
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Audio:
+
+	/* handler: j.Audio type=json.RawMessage kind=slice quoted=false*/
+
+	{
+		if tok == fflib.FFTok_null {
+
+			j.Audio = nil
+
+		} else {
+
+			tbuf, err := fs.CaptureField(tok)
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			if j.Audio == nil {
+				j.Audio = new(json.RawMessage)
+			}
+
+			err = j.Audio.UnmarshalJSON(tbuf)
 			if err != nil {
 				return fs.WrapErr(err)
 			}
@@ -845,6 +976,36 @@ handle_BidFloorCurrency:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
+handle_ClickBrowser:
+
+	/* handler: j.ClickBrowser type=int kind=int quoted=false*/
+
+	{
+		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
+			return fs.WrapErr(fmt.Errorf("cannot unmarshal %s into Go value for int", tok))
+		}
+	}
+
+	{
+
+		if tok == fflib.FFTok_null {
+
+		} else {
+
+			tval, err := fflib.ParseInt(fs.Output.Bytes(), 10, 64)
+
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			j.ClickBrowser = int(tval)
+
+		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
 handle_Secure:
 
 	/* handler: j.Secure type=openrtb.NumberOrBool kind=int quoted=false*/
@@ -995,6 +1156,37 @@ handle_Exp:
 			j.Exp = int(tval)
 
 		}
+	}
+
+	state = fflib.FFParse_after_value
+	goto mainparse
+
+handle_Metric:
+
+	/* handler: j.Metric type=json.RawMessage kind=slice quoted=false*/
+
+	{
+		if tok == fflib.FFTok_null {
+
+			j.Metric = nil
+
+		} else {
+
+			tbuf, err := fs.CaptureField(tok)
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+
+			if j.Metric == nil {
+				j.Metric = new(json.RawMessage)
+			}
+
+			err = j.Metric.UnmarshalJSON(tbuf)
+			if err != nil {
+				return fs.WrapErr(err)
+			}
+		}
+		state = fflib.FFParse_after_value
 	}
 
 	state = fflib.FFParse_after_value

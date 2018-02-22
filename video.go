@@ -27,6 +27,7 @@ type Video struct {
 	W              int              `json:"w,omitempty"`              // Width of the player in pixels
 	H              int              `json:"h,omitempty"`              // Height of the player in pixels
 	StartDelay     int              `json:"startdelay,omitempty"`     // Indicates the start delay in seconds
+	Placement      int              `json:"placement,omitempty"`      // Video type placement
 	Linearity      int              `json:"linearity,omitempty"`      // Indicates whether the ad impression is linear or non-linear
 	Sequence       int              `json:"sequence,omitempty"`       // Default: 1
 	BAttr          []int            `json:"battr,omitempty"`          // Blocked creative attributes
@@ -35,12 +36,15 @@ type Video struct {
 	MaxBitrate     int              `json:"maxbitrate,omitempty"`     // Maximum bit rate in Kbps
 	BoxingAllowed  *NumberOrBool    `json:"boxingallowed,omitempty"`  // If exchange publisher has rules preventing letter boxing
 	PlaybackMethod []int            `json:"playbackmethod,omitempty"` // List of allowed playback methods
+	PlayBackend    int              `json:"playbackend,omitempty"`    // The event that causes playback to end.
 	Delivery       []int            `json:"delivery,omitempty"`       // List of supported delivery methods
 	Pos            int              `json:"pos,omitempty"`            // Ad Position
 	CompanionAd    []Banner         `json:"companionad,omitempty"`
 	Api            []int            `json:"api,omitempty"` // List of supported API frameworks
 	CompanionType  []int            `json:"companiontype,omitempty"`
 	Skip           NumberOrBool     `json:"skip,omitempty"` // Indicates if the player will allow the video to be skipped, where 0 = no, 1 = yes.
+	SkipMin        int              `json:"skipmin,omitempty"`
+	SkipAfter      int              `json:"skipafter,omitempty"`
 	Ext            *json.RawMessage `json:"ext,omitempty"`
 }
 
