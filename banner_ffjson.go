@@ -35,18 +35,20 @@ func (j *Banner) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 	_ = obj
 	_ = err
 	buf.WriteString(`{ `)
-	if true {
-		buf.WriteString(`"format":`)
+	if j.Format != nil {
+		if true {
+			buf.WriteString(`"format":`)
 
-		{
+			{
 
-			err = j.Format.MarshalJSONBuf(buf)
-			if err != nil {
-				return err
+				err = j.Format.MarshalJSONBuf(buf)
+				if err != nil {
+					return err
+				}
+
 			}
-
+			buf.WriteByte(',')
 		}
-		buf.WriteByte(',')
 	}
 	if j.W != 0 {
 		buf.WriteString(`"w":`)
@@ -644,7 +646,13 @@ handle_Format:
 	{
 		if tok == fflib.FFTok_null {
 
+			j.Format = nil
+
 		} else {
+
+			if j.Format == nil {
+				j.Format = new(Format)
+			}
 
 			err = j.Format.UnmarshalJSONFFLexer(fs, fflib.FFParse_want_key)
 			if err != nil {
@@ -1418,9 +1426,9 @@ func (j *Format) MarshalJSONBuf(buf fflib.EncodingBuffer) error {
 		fflib.FormatBits2(buf, uint64(j.H), 10, j.H < 0)
 		buf.WriteByte(',')
 	}
-	if j.Wratio != 0 {
+	if j.WRatio != 0 {
 		buf.WriteString(`"wratio":`)
-		fflib.FormatBits2(buf, uint64(j.Wratio), 10, j.Wratio < 0)
+		fflib.FormatBits2(buf, uint64(j.WRatio), 10, j.WRatio < 0)
 		buf.WriteByte(',')
 	}
 	if j.HRatio != 0 {
@@ -1462,7 +1470,7 @@ const (
 
 	ffjtFormatH
 
-	ffjtFormatWratio
+	ffjtFormatWRatio
 
 	ffjtFormatHRatio
 
@@ -1475,7 +1483,7 @@ var ffjKeyFormatW = []byte("w")
 
 var ffjKeyFormatH = []byte("h")
 
-var ffjKeyFormatWratio = []byte("wratio")
+var ffjKeyFormatWRatio = []byte("wratio")
 
 var ffjKeyFormatHRatio = []byte("hratio")
 
@@ -1572,8 +1580,8 @@ mainparse:
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
-					} else if bytes.Equal(ffjKeyFormatWratio, kn) {
-						currentKey = ffjtFormatWratio
+					} else if bytes.Equal(ffjKeyFormatWRatio, kn) {
+						currentKey = ffjtFormatWRatio
 						state = fflib.FFParse_want_colon
 						goto mainparse
 
@@ -1603,8 +1611,8 @@ mainparse:
 					goto mainparse
 				}
 
-				if fflib.SimpleLetterEqualFold(ffjKeyFormatWratio, kn) {
-					currentKey = ffjtFormatWratio
+				if fflib.SimpleLetterEqualFold(ffjKeyFormatWRatio, kn) {
+					currentKey = ffjtFormatWRatio
 					state = fflib.FFParse_want_colon
 					goto mainparse
 				}
@@ -1644,8 +1652,8 @@ mainparse:
 				case ffjtFormatH:
 					goto handle_H
 
-				case ffjtFormatWratio:
-					goto handle_Wratio
+				case ffjtFormatWRatio:
+					goto handle_WRatio
 
 				case ffjtFormatHRatio:
 					goto handle_HRatio
@@ -1730,9 +1738,9 @@ handle_H:
 	state = fflib.FFParse_after_value
 	goto mainparse
 
-handle_Wratio:
+handle_WRatio:
 
-	/* handler: j.Wratio type=int kind=int quoted=false*/
+	/* handler: j.WRatio type=int kind=int quoted=false*/
 
 	{
 		if tok != fflib.FFTok_integer && tok != fflib.FFTok_null {
@@ -1752,7 +1760,7 @@ handle_Wratio:
 				return fs.WrapErr(err)
 			}
 
-			j.Wratio = int(tval)
+			j.WRatio = int(tval)
 
 		}
 	}
